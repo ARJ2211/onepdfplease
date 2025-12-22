@@ -1,4 +1,4 @@
-package internal
+package menu
 
 import (
 	"fmt"
@@ -55,7 +55,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 // 	Split
 // )
 
-type model struct {
+type Model struct {
 	// cursor        int
 	// SelectedTool  string
 	// SelectedFiles []string
@@ -64,10 +64,9 @@ type model struct {
 	// height        int
 	tools    list.Model
 	choice   string
-	quitting bool
 }
 
-func InitialModel() model {
+func NewModel() Model {
 	items := []list.Item{
 		item("Merge PDFs"),
 		item("Split PDF"),
@@ -84,15 +83,15 @@ func InitialModel() model {
 	l.Styles.Title = titleStyle
 	l.Styles.PaginationStyle = paginationStyle
 	l.Styles.HelpStyle = helpStyle
-	return model{
+	return Model{
 		tools: l, 
 	}
 }
 
-func (m model) Init() tea.Cmd {
+func (m Model) Init() tea.Cmd {
 	return nil
 }
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.tools.SetWidth(msg.Width)
@@ -100,16 +99,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
-		case "q", "ctrl+c":
-			m.quitting = true
-			return m, tea.Quit
-
 		case "enter":
-			i, ok := m.tools.SelectedItem().(item)
-			if ok {
-				m.choice = string(i)
-			}
-			return m, tea.Quit
+			//TODO: change pages here
+			// i, ok := m.tools.SelectedItem().(item)
+			// if ok {
+			// 	m.choice = string(i)
+			// }
+			return m, nil 
 		}
 	}
 
@@ -118,12 +114,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-func (m model) View() string {
+func (m Model) View() string {
 	if m.choice != "" {
 		return quitTextStyle.Render(fmt.Sprintf("%s? Initiating", m.choice))
-	}
-	if m.quitting {
-		return quitTextStyle.Render("That’s cool.")
 	}
 	return "\n" + m.tools.View()
 }

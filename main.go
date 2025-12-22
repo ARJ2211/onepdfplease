@@ -8,11 +8,11 @@ import (
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/chetanjangir0/onepdfplease/internal"
+	"github.com/chetanjangir0/onepdfplease/internal/tui"
 )
 
 func main() {
-	program := tea.NewProgram(internal.InitialModel(), tea.WithAltScreen())
+	program := tea.NewProgram(tui.InitialModel(), tea.WithAltScreen())
 	if _, err := program.Run(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
