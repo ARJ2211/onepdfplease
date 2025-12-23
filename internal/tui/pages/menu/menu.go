@@ -3,12 +3,13 @@ package menu
 import (
 	"fmt"
 	"io"
+	"log"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/chetanjangir0/onepdfplease/internal/tui/utils"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
 var (
@@ -20,7 +21,10 @@ var (
 	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 2, 4)
 )
 
-type item string
+type item struct {
+	title string
+	page types.Page
+} 
 
 func (i item) FilterValue() string { return "" }
 
@@ -35,7 +39,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 		return
 	}
 
-	str := fmt.Sprintf("%d. %s", index+1, i)
+	str := fmt.Sprintf("%d. %s", index+1, i.title)
 
 	fn := itemStyle.Render
 	if index == m.Index() {
@@ -69,9 +73,9 @@ type Model struct {
 
 func NewModel() Model {
 	items := []list.Item{
-		item("Merge PDFs"),
-		item("Split PDF"),
-		item("Encrypt PDF"),
+		item{"Merge PDFs", types.MergePage},
+		item{"Split PDF", types.SplitPage},
+		item{"Encrypt PDF", types.EncryptPage},
 	}
 
 	const defaultWidth = 20
@@ -101,11 +105,11 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
 		case "enter":
-			//TODO: change pages here
+			// TODO: change pages here
 			i, ok := m.tools.SelectedItem().(item)
 			if ok {
 				// m.choice = string(i)
-				utils.Log(string(i))
+				log.Println("navigating to:" + string(i.title))
 			}
 
 			return m, nil 

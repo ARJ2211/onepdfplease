@@ -6,6 +6,7 @@ const (
 	MenuPage Page = iota
 	MergePage
 	SplitPage
+	EncryptPage
 )
 
 type NavigateMsg struct {
