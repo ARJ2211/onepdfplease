@@ -3,7 +3,6 @@ package menu
 import (
 	"fmt"
 	"io"
-	"log"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
@@ -23,8 +22,8 @@ var (
 
 type item struct {
 	title string
-	page types.Page
-} 
+	page  types.Page
+}
 
 func (i item) FilterValue() string { return "" }
 
@@ -51,31 +50,16 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 	fmt.Fprint(w, fn(str))
 }
 
-// type MenuState int
-//
-// const (
-// 	Tools MenuState = iota
-// 	Picker
-// 	Merge
-// 	Split
-// )
-
 type Model struct {
-	// cursor        int
-	// SelectedTool  string
-	// SelectedFiles []string
-	// status        string
-	// width         int
-	// height        int
-	tools    list.Model
-	choice   string
+	tools  list.Model
+	choice string
 }
 
 func NewModel() Model {
 	items := []list.Item{
-		item{"Merge PDFs", types.MergePage},
-		item{"Split PDF", types.SplitPage},
-		item{"Encrypt PDF", types.EncryptPage},
+		item{title: "Merge PDFs", page: types.MergePage},
+		item{title: "Split PDF", page: types.SplitPage},
+		item{title: "Encrypt PDF", page: types.EncryptPage},
 	}
 
 	const defaultWidth = 20
@@ -89,7 +73,7 @@ func NewModel() Model {
 	l.Styles.PaginationStyle = paginationStyle
 	l.Styles.HelpStyle = helpStyle
 	return Model{
-		tools: l, 
+		tools: l,
 	}
 }
 
@@ -108,11 +92,13 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			// TODO: change pages here
 			i, ok := m.tools.SelectedItem().(item)
 			if ok {
-				// m.choice = string(i)
-				log.Println("navigating to:" + string(i.title))
+				// log.Println("navigating to:" + string(i.title))
+				return m, func() tea.Msg {
+					return types.NavigateMsg{Page: i.page}
+				}
 			}
 
-			return m, nil 
+			return m, nil
 		}
 	}
 
