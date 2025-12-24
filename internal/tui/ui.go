@@ -3,6 +3,7 @@ package tui
 import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/menu"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/merge"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
@@ -12,6 +13,7 @@ type model struct {
 
 	// each page has its own model
 	menuModel menu.Model
+	mergeModel merge.Model
 }
 
 func InitialModel() model {
@@ -42,6 +44,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch m.currentPage {
 	case types.MenuPage:
 		m.menuModel, cmd = m.menuModel.Update(msg)
+	case types.MergePage:
+		m.mergeModel, cmd = m.mergeModel.Update(msg)
 	}
 
 	return m, cmd 
@@ -51,6 +55,8 @@ func (m model) View() string {
 	switch m.currentPage {
 	case types.MenuPage:
 		return m.menuModel.View()
+	case types.MergePage:
+		return m.mergeModel.View()
 	}
 	return ""
 
