@@ -3,7 +3,11 @@ package merge
 import (
 	"fmt"
 	"io"
+	"log"
 	"strings"
+
+	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/key"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
@@ -51,6 +55,8 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 type Model struct {
 	files  list.Model
 	choice string
+	keys   keyMap
+	help   help.Model
 }
 
 func NewModel() Model {
@@ -68,9 +74,12 @@ func NewModel() Model {
 	l.SetFilteringEnabled(false)
 	l.Styles.Title = titleStyle
 	l.Styles.PaginationStyle = paginationStyle
-	l.Styles.HelpStyle = helpStyle
+	l.SetShowHelp(false) // instead using custom help menu
+
 	return Model{
 		files: l,
+		keys:  keys,
+		help:  help.New(),
 	}
 }
 
@@ -84,9 +93,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, nil
 
 	case tea.KeyMsg:
-		switch keypress := msg.String(); keypress {
-		case "enter":
-			return m, nil
+		switch {
+		case key.Matches(msg, m.keys.add):
+			log.Println("adding file")
+		case key.Matches(msg, m.keys.remove):
+			log.Println("removing file")
+		case key.Matches(msg, m.keys.merge):
+			log.Println("merging PDFs")
+		case key.Matches(msg, m.keys.save):
+			log.Println("saving PDFs")
 		}
 	}
 
@@ -99,5 +114,12 @@ func (m Model) View() string {
 	if m.choice != "" {
 		return quitTextStyle.Render(fmt.Sprintf("%s? Initiating", m.choice))
 	}
-	return "\n" + m.files.View()
+
+	helpView := helpStyle.Render(m.help.View(m.keys))
+
+	return "\n" + lipgloss.JoinVertical(
+		lipgloss.Left,
+		m.files.View(),
+		helpView,
+	)
 }
