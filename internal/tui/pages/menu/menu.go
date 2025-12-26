@@ -111,5 +111,7 @@ func (m Model) View() string {
 	if m.choice != "" {
 		return quitTextStyle.Render(fmt.Sprintf("%s? Initiating", m.choice))
 	}
-	return "\n" + m.tools.View()
+
+	toolsView := m.tools.View()
+	return "\n" + toolsView 
 }

@@ -115,11 +115,12 @@ func (m Model) View() string {
 		return quitTextStyle.Render(fmt.Sprintf("%s? Initiating", m.choice))
 	}
 
+	filesView := m.files.View()
 	helpView := helpStyle.Render(m.help.View(m.keys))
 
 	return "\n" + lipgloss.JoinVertical(
 		lipgloss.Left,
-		m.files.View(),
+		filesView,
 		helpView,
 	)
 }
