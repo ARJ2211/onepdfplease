@@ -12,6 +12,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/components/filepicker"
 )
 
 var (
@@ -57,6 +58,7 @@ type Model struct {
 	choice string
 	keys   keyMap
 	help   help.Model
+	filePicker filepicker.NewModel() 
 }
 
 func NewModel() Model {
