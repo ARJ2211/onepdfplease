@@ -17,7 +17,7 @@ type Model struct {
 	// selectedFiles []string
 }
 
-func (m Model) NewModel() Model {
+func NewModel() Model {
 	fp := filepicker.New()
 	fp.AllowedTypes = []string{".pdf"}
 	fp.CurrentDirectory, _ = os.UserHomeDir()

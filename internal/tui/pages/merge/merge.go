@@ -54,11 +54,12 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 }
 
 type Model struct {
-	files  list.Model
-	choice string
-	keys   keyMap
-	help   help.Model
-	filePicker filepicker.NewModel() 
+	files       list.Model
+	choice      string
+	keys        keyMap
+	help        help.Model
+	filePicker  filepicker.Model
+	pickingFile bool
 }
 
 func NewModel() Model {
@@ -79,9 +80,10 @@ func NewModel() Model {
 	l.SetShowHelp(false) // instead using custom help menu
 
 	return Model{
-		files: l,
-		keys:  keys,
-		help:  help.New(),
+		files:      l,
+		keys:       keys,
+		help:       help.New(),
+		filePicker: filepicker.NewModel(),
 	}
 }
 
@@ -97,7 +99,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keys.add):
-			log.Println("adding file")
+			m.pickingFile = true
 		case key.Matches(msg, m.keys.remove):
 			log.Println("removing file")
 		case key.Matches(msg, m.keys.merge):
@@ -108,6 +110,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	}
 
 	var cmd tea.Cmd
+
+	if m.pickingFile {
+		m.filePicker, cmd = m.filePicker.Update(msg)
+		return m, cmd
+	}
+
 	m.files, cmd = m.files.Update(msg)
 	return m, cmd
 }
@@ -119,6 +127,10 @@ func (m Model) View() string {
 
 	filesView := m.files.View()
 	helpView := helpStyle.Render(m.help.View(m.keys))
+
+	if m.pickingFile {
+		return m.filePicker.View()
+	}
 
 	return "\n" + lipgloss.JoinVertical(
 		lipgloss.Left,
