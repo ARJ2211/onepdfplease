@@ -12,3 +12,7 @@ const (
 type NavigateMsg struct {
 	Page Page
 }
+
+type QuitFilePickerMsg struct {
+	Paths []string
+}

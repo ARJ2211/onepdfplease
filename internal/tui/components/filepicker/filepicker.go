@@ -1,5 +1,13 @@
 package filepicker
 
+// TODO
+// add the selected files to the caller model
+// make two columns for selected files and file View
+// quit the filepicker and go back to the caller page
+// add keymaps and show keymaps in help menu
+// add keymap for user indicating all the files have been chosen and quit
+// space to toggle file selection and enter to end filepicker
+
 import (
 	"errors"
 	"os"
@@ -8,13 +16,13 @@ import (
 
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
 type Model struct {
 	filepicker    filepicker.Model
-	selectedFiles []string
+	SelectedFiles []string
 	err           error
-	// selectedFiles []string
 }
 
 func NewModel() Model {
@@ -46,6 +54,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		case "ctrl+y":
+			return m, func() tea.Msg{
+				return types.QuitFilePickerMsg{Paths: m.SelectedFiles } // TODO: use reference here
+			}		
 		}
 	case clearErrorMsg:
 		m.err = nil
@@ -56,7 +68,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// Did the user select a file?
 	if didSelect, path := m.filepicker.DidSelectFile(msg); didSelect {
-		m.selectedFiles = append(m.selectedFiles, path)
+		m.SelectedFiles = append(m.SelectedFiles, path)
 	}
 
 	// Did the user select a disabled file?
@@ -76,11 +88,11 @@ func (m Model) View() string {
 	s.WriteString("\n  ")
 	if m.err != nil {
 		s.WriteString(m.filepicker.Styles.DisabledFile.Render(m.err.Error()))
-	} else if len(m.selectedFiles) == 0 {
+	} else if len(m.SelectedFiles) == 0 {
 		s.WriteString("Pick a file:")
 	} else {
 		s.WriteString("Selected files: \n")
-		for _, f := range m.selectedFiles {
+		for _, f := range m.SelectedFiles {
 			s.WriteString(m.filepicker.Styles.Selected.Render(f) + "\n")
 		}
 	}

@@ -13,6 +13,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/filepicker"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
 var (
@@ -63,10 +64,7 @@ type Model struct {
 }
 
 func NewModel() Model {
-	items := []list.Item{
-		file{path: "./test1.pdf"},
-		file{path: "./test2.pdf"},
-	}
+	items := []list.Item{}
 
 	const defaultWidth = 20
 	const listHeight = 14
@@ -100,6 +98,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, m.keys.add):
 			m.pickingFile = true
+			m.filePicker = filepicker.NewModel()
 			return m, m.filePicker.Init()
 		case key.Matches(msg, m.keys.remove):
 			log.Println("removing file")
@@ -108,6 +107,11 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		case key.Matches(msg, m.keys.save):
 			log.Println("saving PDFs")
 		}
+	case types.QuitFilePickerMsg:
+		for _, path := range msg.Paths {
+			m.files.InsertItem(len(m.files.Items()), file{path: path})
+		}
+		m.pickingFile = false
 	}
 
 	var cmd tea.Cmd
