@@ -11,9 +11,9 @@ import (
 )
 
 type Model struct {
-	filepicker   filepicker.Model
-	selectedFile string
-	err          error
+	filepicker    filepicker.Model
+	selectedFiles []string
+	err           error
 	// selectedFiles []string
 }
 
@@ -56,7 +56,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	// Did the user select a file?
 	if didSelect, path := m.filepicker.DidSelectFile(msg); didSelect {
-		m.selectedFile = path
+		m.selectedFiles = append(m.selectedFiles, path)
 	}
 
 	// Did the user select a disabled file?
@@ -64,7 +64,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	if didSelect, path := m.filepicker.DidSelectDisabledFile(msg); didSelect {
 		// Let's clear the selectedFile and display an error.
 		m.err = errors.New(path + " is not valid.")
-		m.selectedFile = ""
+		// m.selectedFile = ""
 		return m, tea.Batch(cmd, clearErrorAfter(2*time.Second))
 	}
 
@@ -76,10 +76,13 @@ func (m Model) View() string {
 	s.WriteString("\n  ")
 	if m.err != nil {
 		s.WriteString(m.filepicker.Styles.DisabledFile.Render(m.err.Error()))
-	} else if m.selectedFile == "" {
+	} else if len(m.selectedFiles) == 0 {
 		s.WriteString("Pick a file:")
 	} else {
-		s.WriteString("Selected file: " + m.filepicker.Styles.Selected.Render(m.selectedFile))
+		s.WriteString("Selected files: \n")
+		for _, f := range m.selectedFiles {
+			s.WriteString(m.filepicker.Styles.Selected.Render(f) + "\n")
+		}
 	}
 	s.WriteString("\n\n" + m.filepicker.View() + "\n")
 	return s.String()
