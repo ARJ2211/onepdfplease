@@ -1,6 +1,4 @@
 package merge
-// TODO:
-// remove the prefix in file view
 
 import (
 	"github.com/charmbracelet/bubbles/key"

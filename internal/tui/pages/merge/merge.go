@@ -1,5 +1,7 @@
 package merge
-
+// TODO:
+// remove the prefix in file view
+// fix no items style
 import (
 	"fmt"
 	"io"
@@ -101,7 +103,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.filePicker = filepicker.NewModel()
 			return m, m.filePicker.Init()
 		case key.Matches(msg, m.keys.remove):
-			log.Println("removing file")
+			m.files.RemoveItem(m.files.GlobalIndex())
+			return m, nil
 		case key.Matches(msg, m.keys.merge):
 			log.Println("merging PDFs")
 		case key.Matches(msg, m.keys.save):
@@ -110,10 +113,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			curIdx := m.files.GlobalIndex()
 			m.swapItems(curIdx, curIdx + 1)
 			m.files.CursorDown()
+			return m, nil
 		case key.Matches(msg, m.keys.shiftUp):
 			curIdx := m.files.GlobalIndex()
 			m.swapItems(curIdx, curIdx - 1)
 			m.files.CursorUp()
+			return m, nil
 		}
 	case types.QuitFilePickerMsg:
 		for _, path := range msg.Paths {
