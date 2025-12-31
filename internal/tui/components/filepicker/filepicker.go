@@ -16,6 +16,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
@@ -87,18 +88,26 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	var s strings.Builder
-	s.WriteString("\n  ")
+	var pickerView, status strings.Builder
+	pickerView.WriteString("\n  ")
+	status.WriteString("\n  ")
+	pickerView.WriteString("Pick files:")
+	status.WriteString("Selected files: \n")
+
 	if m.err != nil {
-		s.WriteString(m.filepicker.Styles.DisabledFile.Render(m.err.Error()))
-	} else if len(m.SelectedFiles) == 0 {
-		s.WriteString("Pick a file:")
-	} else {
-		s.WriteString("Selected files: \n")
-		for _, f := range m.SelectedFiles {
-			s.WriteString(m.filepicker.Styles.Selected.Render(f) + "\n")
-		}
+		pickerView.WriteString(m.filepicker.Styles.DisabledFile.Render(m.err.Error()))
 	}
-	s.WriteString("\n\n" + m.filepicker.View() + "\n")
-	return s.String()
+
+	status.WriteString("\n")
+	for _, f := range m.SelectedFiles {
+		status.WriteString(m.filepicker.Styles.Selected.Render(f) + "\n")
+	}
+	status.WriteString("\n")
+
+	pickerView.WriteString("\n\n" + m.filepicker.View() + "\n")
+	return lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		pickerView.String(),
+		status.String(),
+	)
 }
