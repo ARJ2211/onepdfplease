@@ -2,14 +2,9 @@ package merge
 
 // TODO:
 // fix "no items" style
-// fix more help not working
-// incorporate the list keymaps into the custom keymaps
 import (
 	"fmt"
-	"io"
 	"log"
-	"path/filepath"
-	"strings"
 
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
@@ -35,29 +30,6 @@ type file struct {
 }
 
 func (i file) FilterValue() string { return "" }
-
-type itemDelegate struct{}
-
-func (d itemDelegate) Height() int                             { return 1 }
-func (d itemDelegate) Spacing() int                            { return 0 }
-func (d itemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
-func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	f, ok := listItem.(file)
-	if !ok {
-		return
-	}
-
-	str := fmt.Sprintf("[%d] %s", index+1, filepath.Base(f.path))
-
-	fn := itemStyle.Render
-	if index == m.Index() {
-		fn = func(s ...string) string {
-			return selectedItemStyle.Render("> " + strings.Join(s, " "))
-		}
-	}
-
-	fmt.Fprint(w, fn(str))
-}
 
 type Model struct {
 	files       list.Model
