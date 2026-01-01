@@ -81,6 +81,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			return m, m.filePicker.Init()
 		case key.Matches(msg, m.keys.remove):
 			m.files.RemoveItem(m.files.GlobalIndex())
+			m.files.CursorUp()
 			return m, nil
 		case key.Matches(msg, m.keys.merge):
 			log.Println("merging PDFs")
