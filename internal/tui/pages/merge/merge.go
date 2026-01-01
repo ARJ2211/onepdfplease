@@ -2,6 +2,7 @@ package merge
 
 // TODO:
 // fix "no items" style
+// user borders 
 import (
 	"fmt"
 	"log"
@@ -53,6 +54,7 @@ func NewModel() Model {
 	l.Styles.Title = titleStyle
 	l.Styles.PaginationStyle = paginationStyle
 	l.SetShowHelp(false) // instead using custom help menu
+	l.Styles.NoItems = l.Styles.NoItems.PaddingLeft(l.Styles.TitleBar.GetPaddingLeft())
 
 	return Model{
 		files:      l,
