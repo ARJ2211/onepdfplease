@@ -79,6 +79,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			return m, m.filePicker.Init()
 		case key.Matches(msg, m.keys.remove):
 			m.files.RemoveItem(m.files.GlobalIndex())
+			return m, nil
 		case key.Matches(msg, m.keys.merge):
 			log.Println("merging PDFs")
 		case key.Matches(msg, m.keys.save):
@@ -87,12 +88,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.help.ShowAll = !m.help.ShowAll
 		case key.Matches(msg, m.keys.shiftDown):
 			curIdx := m.files.GlobalIndex()
-			m.swapItems(curIdx, curIdx + 1)
+			m.swapItems(curIdx, curIdx+1)
 			m.files.CursorDown()
 			return m, nil
 		case key.Matches(msg, m.keys.shiftUp):
 			curIdx := m.files.GlobalIndex()
-			m.swapItems(curIdx, curIdx - 1)
+			m.swapItems(curIdx, curIdx-1)
 			m.files.CursorUp()
 			return m, nil
 		}
