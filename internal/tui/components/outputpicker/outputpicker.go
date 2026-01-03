@@ -34,6 +34,10 @@ type Field struct {
 	Prompt      string
 }
 
+func (m *Model) ToggleFocus() {
+	m.Focused = !m.Focused
+}
+
 func NewModel(fields []Field) Model {
 	m := Model{
 		Inputs: make([]textinput.Model, len(fields)),

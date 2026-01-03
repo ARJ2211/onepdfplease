@@ -79,7 +79,6 @@ func NewModel() Model {
 }
 
 func (m Model) Init() tea.Cmd {
-	m.outputPicker.Init()
 	return nil
 }
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
@@ -115,7 +114,8 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.files.CursorUp()
 			return m, nil
 		case key.Matches(msg, m.keys.tab):
-			m.outputPicker.Focused = !m.outputPicker.Focused
+			m.outputPicker.ToggleFocus()
+			return m, m.outputPicker.Init()
 		}
 	case types.QuitFilePickerMsg:
 		for _, path := range msg.Paths {
