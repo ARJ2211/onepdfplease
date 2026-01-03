@@ -31,7 +31,7 @@ type Model struct {
 
 type Field struct {
 	Placeholder string
-	Prefix      string
+	Prompt      string
 }
 
 func NewModel(fields []Field) Model {
@@ -46,6 +46,7 @@ func NewModel(fields []Field) Model {
 		t.CharLimit = 64 
 		t.Width = 20
 		t.Placeholder = fields[i].Placeholder
+		t.Prompt = fields[i].Prompt
 		if i == 0 {
 			t.Focus()
 		}

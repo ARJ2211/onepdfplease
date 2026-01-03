@@ -65,7 +65,7 @@ func NewModel() Model {
 	outputFields := []outputpicker.Field{
 		{
 			Placeholder: "./merged.pdf",
-			Prefix:      "Output File",
+			Prompt:      "Output File: ",
 		},
 	}
 	op := outputpicker.NewModel(outputFields)
