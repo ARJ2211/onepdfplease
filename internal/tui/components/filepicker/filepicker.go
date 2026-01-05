@@ -8,11 +8,11 @@ package filepicker
 // add swap mechanism
 // add pagination in selected items too
 // account for long names of the files
-// 
 
 import (
 	"errors"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -104,7 +104,7 @@ func (m Model) View() string {
 	statusView.WriteString("Selected files: \n")
 	statusView.WriteString("\n")
 	for _, f := range m.SelectedFiles {
-		statusView.WriteString(m.filepicker.Styles.Selected.Padding(0, 0, 0, 2).Render(f) + "\n")
+		statusView.WriteString(m.filepicker.Styles.Selected.Padding(0, 0, 0, 2).Render(filepath.Base(f)) + "\n")
 	}
 	statusView.WriteString("\n")
 
