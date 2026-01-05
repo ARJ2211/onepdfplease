@@ -111,7 +111,7 @@ func (m Model) browseView() string {
 }
 
 func (m Model) selectedView() string {
-	var view strings.Builder 
+	var view strings.Builder
 	view.WriteString("\n  ")
 	view.WriteString("Selected files: \n")
 	view.WriteString("\n")

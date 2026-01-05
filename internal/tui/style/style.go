@@ -1,20 +1,90 @@
 package style
 
-import "github.com/charmbracelet/lipgloss"
+import (
+	"strings"
 
+	"github.com/charmbracelet/lipgloss"
+)
 
 type Style struct {
 	FocusedBorder lipgloss.Style
 	BlurredBorder lipgloss.Style
-
 }
 
 var DefaultStyle = &Style{
-	FocusedBorder : lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("205")), // Bright pink/magenta
+	FocusedBorder: lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("205")), // Bright pink/magenta
 
-	BlurredBorder : lipgloss.NewStyle().
-			Border(lipgloss.RoundedBorder()).
-			BorderForeground(lipgloss.Color("240")), // Dim gray
+	BlurredBorder: lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("240")), // Dim gray
+}
+
+func RenderColumnLayout(termWidth, termHeight int, columnViews ...string) string {
+	columnStyle := lipgloss.NewStyle().
+		BorderStyle(lipgloss.RoundedBorder()).
+		BorderForeground(lipgloss.Color("63")).
+		Padding(1, 1)
+
+	numColumns := len(columnViews)
+	spacing := 2 // Space between columns
+
+	totalSpacing := spacing * (numColumns - 1)
+
+	borderWidthPerColumn := 2
+	totalBorderWidth := borderWidthPerColumn * numColumns
+
+	paddingPerColumn := 0
+	totalPadding := paddingPerColumn * numColumns
+
+	usableWidth := termWidth - totalBorderWidth - totalPadding - totalSpacing
+
+	// Each column gets equal percentage
+	columnContentWidth := usableWidth / numColumns
+
+	// Adjust for any remainder pixels
+	remainder := usableWidth % numColumns
+
+	columnHeight := 12
+
+	columns := make([]string, numColumns)
+	for i := range numColumns {
+		colContent := lipgloss.JoinVertical(lipgloss.Left,
+			lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("86")).Render(columnViews[i]))
+
+		colWidth := columnContentWidth
+		if i == numColumns-1 {
+			colWidth += remainder
+		}
+		columns[i] = columnStyle.
+			BorderForeground(lipgloss.Color("170")).
+			Width(colWidth).
+			Height(columnHeight).
+			Render(colContent)
+	}
+
+	// Join columns horizontally with spacing
+	spacer := strings.Repeat(" ", spacing)
+	row := lipgloss.JoinHorizontal(
+		lipgloss.Top,
+		addSpacerInBetween(columns, spacer)...,
+	)
+
+	return row
+}
+
+func addSpacerInBetween(cols []string, spacer string) []string {
+	if len(cols) == 0 {
+		return nil
+	}
+
+	out := make([]string, 0, len(cols)*2-1)
+	for i, c := range cols {
+		if i > 0 {
+			out = append(out, spacer)
+		}
+		out = append(out, c)
+	}
+	return out
 }
