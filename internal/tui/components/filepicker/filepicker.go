@@ -96,7 +96,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 func (m Model) View() string {
 	return style.RenderColumnLayout(
 		m.ctx.ScreenWidth,
-		m.ctx.ScreenHeight - 5,
+		m.ctx.ScreenHeight,
 		m.browseView(),
 		m.selectedView(),
 	)

@@ -41,7 +41,7 @@ func RenderColumnLayout(termWidth, height int, columnViews ...string) string {
 	// Adjust for any remainder pixels
 	remainder := usableWidth % numColumns
 
-	columnHeight := height 
+	columnHeight := height - paddingPerColumn - borderWidthPerColumn
 
 	columns := make([]string, numColumns)
 	for i := range numColumns {
@@ -53,7 +53,7 @@ func RenderColumnLayout(termWidth, height int, columnViews ...string) string {
 			colWidth += remainder
 		}
 		columns[i] = DefaultStyle.FocusedBorder.
-			Padding(1, 1).
+			Padding(paddingPerColumn).
 			Width(colWidth).
 			Height(columnHeight).
 			Render(colContent)
