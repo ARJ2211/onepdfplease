@@ -19,6 +19,7 @@ import (
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
@@ -26,9 +27,10 @@ type Model struct {
 	filepicker    filepicker.Model
 	SelectedFiles []string
 	err           error
+	ctx           *context.ProgramContext
 }
 
-func NewModel() Model {
+func NewModel(ctx *context.ProgramContext) Model {
 	fp := filepicker.New()
 	fp.AllowedTypes = []string{".pdf"}
 	fp.CurrentDirectory, _ = os.UserHomeDir()
@@ -39,6 +41,7 @@ func NewModel() Model {
 	// )
 	return Model{
 		filepicker: fp,
+		ctx:        ctx,
 	}
 }
 

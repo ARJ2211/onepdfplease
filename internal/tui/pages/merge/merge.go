@@ -20,7 +20,7 @@ type Model struct {
 }
 
 func NewModel(ctx *context.ProgramContext) Model {
-	lf := listfiles.NewModel()
+	lf := listfiles.NewModel(ctx)
 	lf.Title = "Merge PDFs"
 
 	outputFields := []outputpicker.Field{

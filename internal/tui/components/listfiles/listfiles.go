@@ -4,7 +4,7 @@ package listfiles
 // fix "no items" style
 // user borders
 // add output file defaults and user able to edit it eg: output file: /home/user/Downloads/merge.pdf
-// seperate help view from this to render it outside in any place 
+// seperate help view from this to render it outside in any place
 import (
 	"log"
 
@@ -14,6 +14,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/filepicker"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
@@ -38,9 +39,10 @@ type Model struct {
 	filePicker  filepicker.Model
 	pickingFile bool
 	Title       string
+	ctx *context.ProgramContext
 }
 
-func NewModel() Model {
+func NewModel(ctx *context.ProgramContext) Model {
 	items := []list.Item{}
 
 	const defaultWidth = 20
@@ -55,7 +57,7 @@ func NewModel() Model {
 	l.SetShowHelp(false) // instead using custom help menu
 	l.Styles.NoItems = l.Styles.NoItems.PaddingLeft(l.Styles.TitleBar.GetPaddingLeft())
 
-	fp := filepicker.NewModel()
+	fp := filepicker.NewModel(ctx)
 
 	return Model{
 		files:      l,
@@ -78,7 +80,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, m.keys.add):
 			m.pickingFile = true
-			m.filePicker = filepicker.NewModel()
+			m.filePicker = filepicker.NewModel(m.ctx)
 			return m, m.filePicker.Init()
 		case key.Matches(msg, m.keys.remove):
 			m.files.RemoveItem(m.files.GlobalIndex())
