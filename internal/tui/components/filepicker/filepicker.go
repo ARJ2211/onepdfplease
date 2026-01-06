@@ -120,7 +120,7 @@ func (m Model) selectedView() string {
 	view.WriteString("Selected files: \n")
 	view.WriteString("\n")
 	for _, f := range m.SelectedFiles {
-		view.WriteString(m.filepicker.Styles.Selected.Padding(0, 0, 0, 2).Render(filepath.Base(f)) + "\n")
+		view.WriteString(m.filepicker.Styles.Selected.Render(filepath.Base(f)) + "\n")
 	}
 	view.WriteString("\n")
 	return view.String()
