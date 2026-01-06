@@ -4,11 +4,11 @@ package merge
 // change focus using tab
 // fix border changing after selected files become active
 import (
-
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/listfiles"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/outputpicker"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 )
 
@@ -16,9 +16,10 @@ type Model struct {
 	focusIndex   int // 0 for fileList 1 for outputPicker
 	fileList     listfiles.Model
 	outputPicker outputpicker.Model
+	ctx          *context.ProgramContext
 }
 
-func NewModel() Model {
+func NewModel(ctx *context.ProgramContext) Model {
 	lf := listfiles.NewModel()
 	lf.Title = "Merge PDFs"
 
@@ -32,6 +33,7 @@ func NewModel() Model {
 	return Model{
 		fileList:     lf,
 		outputPicker: op,
+		ctx:          ctx,
 	}
 }
 
@@ -77,5 +79,5 @@ func (m Model) View() string {
 		outputPickerView,
 	)
 
-	// return style.RenderColumnLayout(150, 30, fileListView, outputPickerView)
+	// return style.RenderColumnLayout(m.ctx.ScreenWidth, 10, fileListView, outputPickerView)
 }

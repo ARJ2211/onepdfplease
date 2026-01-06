@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
@@ -18,7 +19,7 @@ var (
 	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
 	paginationStyle   = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
 	helpStyle         = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1)
-	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 2, 4)
+	// quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 2, 4)
 )
 
 type item struct {
@@ -54,9 +55,10 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 type Model struct {
 	tools  list.Model
 	choice string
+	ctx    *context.ProgramContext
 }
 
-func NewModel() Model {
+func NewModel(ctx *context.ProgramContext) Model {
 	items := []list.Item{
 		item{title: "Merge PDFs", page: types.MergePage},
 		item{title: "Split PDF", page: types.SplitPage},
@@ -75,6 +77,7 @@ func NewModel() Model {
 	l.Styles.HelpStyle = helpStyle
 	return Model{
 		tools: l,
+		ctx:   ctx,
 	}
 }
 
@@ -110,5 +113,5 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 func (m Model) View() string {
 	toolsView := style.DefaultStyle.FocusedBorder.Render(m.tools.View())
-	return "\n" + toolsView 
+	return "\n" + toolsView
 }

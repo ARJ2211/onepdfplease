@@ -21,7 +21,7 @@ var DefaultStyle = &Style{
 		BorderForeground(lipgloss.Color("240")), // Dim gray
 }
 
-func RenderColumnLayout(termWidth, termHeight int, columnViews ...string) string {
+func RenderColumnLayout(termWidth, height int, columnViews ...string) string {
 	columnStyle := lipgloss.NewStyle().
 		BorderStyle(lipgloss.RoundedBorder()).
 		BorderForeground(lipgloss.Color("63")).
@@ -46,7 +46,7 @@ func RenderColumnLayout(termWidth, termHeight int, columnViews ...string) string
 	// Adjust for any remainder pixels
 	remainder := usableWidth % numColumns
 
-	columnHeight := 12
+	columnHeight := height 
 
 	columns := make([]string, numColumns)
 	for i := range numColumns {

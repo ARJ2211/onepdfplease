@@ -22,10 +22,10 @@ type model struct {
 func InitialModel() model {
 	m := model{
 		currentPage: types.MenuPage,
-		menuModel:   menu.NewModel(),
-		mergeModel:  merge.NewModel(),
 	}
 	m.ctx = &context.ProgramContext{}
+	m.menuModel = menu.NewModel(m.ctx)
+	m.mergeModel = merge.NewModel(m.ctx)
 	return m
 }
 
