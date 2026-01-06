@@ -65,6 +65,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
+	if m.fileList.PickingFile {
+		return m.fileList.View()
+	}
 	var fileListView, outputPickerView string
 	if m.focusIndex == 0 {
 		fileListView = style.DefaultStyle.FocusedBorder.Render(m.fileList.View())

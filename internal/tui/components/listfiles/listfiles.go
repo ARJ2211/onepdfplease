@@ -37,7 +37,7 @@ type Model struct {
 	keys        keyMap
 	help        help.Model
 	filePicker  filepicker.Model
-	pickingFile bool
+	PickingFile bool
 	Title       string
 	ctx         *context.ProgramContext
 }
@@ -80,7 +80,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch {
 		case key.Matches(msg, m.keys.add):
-			m.pickingFile = true
+			m.PickingFile = true
 			m.filePicker = filepicker.NewModel(m.ctx)
 			return m, m.filePicker.Init()
 		case key.Matches(msg, m.keys.remove):
@@ -108,12 +108,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		for _, path := range msg.Paths {
 			m.files.InsertItem(len(m.files.Items()), file{path: path})
 		}
-		m.pickingFile = false
+		m.PickingFile = false
 	}
 
 	var cmd tea.Cmd
 
-	if m.pickingFile {
+	if m.PickingFile {
 		m.filePicker, cmd = m.filePicker.Update(msg)
 		return m, cmd
 	}
@@ -126,7 +126,7 @@ func (m Model) View() string {
 	filesView := m.files.View()
 	helpView := helpStyle.Render(m.help.View(m.keys))
 
-	if m.pickingFile {
+	if m.PickingFile {
 		return m.filePicker.View()
 	}
 

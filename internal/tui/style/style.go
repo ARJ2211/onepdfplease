@@ -22,13 +22,8 @@ var DefaultStyle = &Style{
 }
 
 func RenderColumnLayout(termWidth, height int, columnViews ...string) string {
-	columnStyle := lipgloss.NewStyle().
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("63")).
-		Padding(1, 1)
-
 	numColumns := len(columnViews)
-	spacing := 2 // Space between columns
+	spacing := 0 // Space between columns
 
 	totalSpacing := spacing * (numColumns - 1)
 
@@ -57,8 +52,8 @@ func RenderColumnLayout(termWidth, height int, columnViews ...string) string {
 		if i == numColumns-1 {
 			colWidth += remainder
 		}
-		columns[i] = columnStyle.
-			BorderForeground(lipgloss.Color("170")).
+		columns[i] = DefaultStyle.FocusedBorder.
+			Padding(1, 1).
 			Width(colWidth).
 			Height(columnHeight).
 			Render(colContent)
