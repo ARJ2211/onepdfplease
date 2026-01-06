@@ -39,7 +39,7 @@ type Model struct {
 	filePicker  filepicker.Model
 	pickingFile bool
 	Title       string
-	ctx *context.ProgramContext
+	ctx         *context.ProgramContext
 }
 
 func NewModel(ctx *context.ProgramContext) Model {
@@ -64,6 +64,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 		keys:       keys,
 		help:       help.New(),
 		filePicker: fp,
+		ctx:        ctx,
 	}
 }
 

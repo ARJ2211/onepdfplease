@@ -18,8 +18,9 @@ import (
 
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
+	// "github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
@@ -94,11 +95,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 func (m Model) View() string {
 
-	return lipgloss.JoinHorizontal(
-		lipgloss.Top,
-		m.browseView(),
-		m.selectedView(),
-	)
+	// return lipgloss.JoinHorizontal(
+	// 	lipgloss.Top,
+	// 	m.browseView(),
+	// 	m.selectedView(),
+	// )
+	return style.RenderColumnLayout(m.ctx.ScreenWidth, 15, m.browseView(), m.selectedView())
 }
 
 func (m Model) browseView() string {
