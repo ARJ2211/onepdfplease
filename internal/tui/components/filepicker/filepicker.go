@@ -5,7 +5,6 @@ package filepicker
 // space to toggle file selection and enter to end filepicker
 // add file deletions maybe give the user an undo button
 // add keys component from bubbles
-// add swap mechanism
 // add pagination in selected items too
 // account for long names of the files
 // use ... for long file names
@@ -36,6 +35,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 	fp.AllowedTypes = []string{".pdf"}
 	fp.CurrentDirectory, _ = os.UserHomeDir()
 	fp.SetHeight(20)
+	fp.ShowPermissions = false
 	// fp.KeyMap.Select = key.NewBinding(
 	// 	key.WithKeys(" "),
 	// 	key.WithHelp("space", "select"),
