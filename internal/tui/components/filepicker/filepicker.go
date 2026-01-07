@@ -27,13 +27,16 @@ type Model struct {
 	SelectedFiles []string
 	err           error
 	ctx           *context.ProgramContext
+	height        int
 }
 
 func NewModel(ctx *context.ProgramContext) Model {
+	height := 20
+
 	fp := filepicker.New()
 	fp.AllowedTypes = []string{".pdf"}
 	fp.CurrentDirectory, _ = os.UserHomeDir()
-	fp.SetHeight(20)
+	fp.SetHeight(height)
 	fp.ShowPermissions = false
 	// fp.KeyMap.Select = key.NewBinding(
 	// 	key.WithKeys(" "),
@@ -42,6 +45,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 	return Model{
 		filepicker: fp,
 		ctx:        ctx,
+		height:     height,
 	}
 }
 
@@ -118,7 +122,11 @@ func (m Model) selectedView() string {
 	view.WriteString("\n  ")
 	view.WriteString("Selected files: \n")
 	view.WriteString("\n")
-	for _, f := range m.SelectedFiles {
+	for i, f := range m.SelectedFiles {
+		// only show the last m.height files when files are too many
+		if m.height <= len(m.SelectedFiles) && i < len(m.SelectedFiles)-m.height {
+			continue
+		}
 		view.WriteString(m.filepicker.Styles.Selected.PaddingLeft(2).Render(filepath.Base(f)) + "\n")
 	}
 	view.WriteString("\n")
