@@ -42,6 +42,10 @@ type Model struct {
 	ctx         *context.ProgramContext
 }
 
+func (m *Model) SetTitle(title string){
+	m.files.Title = title
+}
+
 func NewModel(ctx *context.ProgramContext) Model {
 	items := []list.Item{}
 
