@@ -6,8 +6,7 @@ package filepicker
 // add file deletions maybe give the user an undo button
 // add keys component from bubbles
 // add pagination in selected items too
-// account for long names of the files
-// use ... for long file names
+// don't use truncation in error view
 
 import (
 	"errors"
@@ -120,7 +119,7 @@ func (m Model) selectedView() string {
 	view.WriteString("Selected files: \n")
 	view.WriteString("\n")
 	for _, f := range m.SelectedFiles {
-		view.WriteString(m.filepicker.Styles.Selected.Render(filepath.Base(f)) + "\n")
+		view.WriteString(m.filepicker.Styles.Selected.PaddingLeft(2).Render(filepath.Base(f)) + "\n")
 	}
 	view.WriteString("\n")
 	return view.String()
