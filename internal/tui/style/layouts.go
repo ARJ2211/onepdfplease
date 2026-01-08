@@ -39,7 +39,7 @@ func RenderTwoFullCols(termWidth, termHeight int, style lipgloss.Style, col1View
 func RenderTwoFullRows(termWidth, termHeight int, row1Style, row2Style lipgloss.Style, row1View, row2View string) string {
 	spacing := 0
 	padding := 0
-	heights := SplitHeightByPercentage(termHeight, []float64{0.7, 0.3}, spacing, padding, 2)
+	heights := SplitHeightByPercentage(termHeight, []float64{0.6, 0.4}, spacing, padding, 2)
 	width := SplitWidthByPercentage(termWidth, []float64{1}, spacing, padding, 2)
 
 	// truncateView
