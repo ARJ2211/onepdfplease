@@ -1,16 +1,13 @@
 package style
 
 import (
-	"strings"
-
 	"github.com/charmbracelet/lipgloss"
 )
 
 func RenderTwoFullCols(termWidth, termHeight int, style lipgloss.Style, col1View, col2View string) string {
-	spacing := 0
 	padding := 0
-	height := SplitHeightByPercentage(termHeight, []float64{1}, spacing, padding, 2)
-	widths := SplitWidthByPercentage(termWidth, []float64{0.5, 0.5}, spacing, padding, 2)
+	height := SplitHeightByPercentage(termHeight, []float64{1}, padding, 2)
+	widths := SplitWidthByPercentage(termWidth, []float64{0.5, 0.5}, padding, 2)
 
 	// truncateView
 	col1View = TruncateView(col1View, widths[0])
@@ -28,19 +25,17 @@ func RenderTwoFullCols(termWidth, termHeight int, style lipgloss.Style, col1View
 		Height(height[0]).
 		Render(col2View)
 
-	// add spacing
-	spacer := strings.Repeat(" ", spacing)
 	return lipgloss.JoinHorizontal(
 		lipgloss.Top,
-		AddSpacerInBetween([]string{col1View, col2View}, spacer)...,
+		col1View,
+		col2View,
 	)
 }
 
 func RenderTwoFullRows(termWidth, termHeight int, row1Style, row2Style lipgloss.Style, row1View, row2View string) string {
-	spacing := 0
 	padding := 0
-	heights := SplitHeightByPercentage(termHeight, []float64{0.6, 0.4}, spacing, padding, 2)
-	width := SplitWidthByPercentage(termWidth, []float64{1}, spacing, padding, 2)
+	heights := SplitHeightByPercentage(termHeight, []float64{0.6, 0.4}, padding, 2)
+	width := SplitWidthByPercentage(termWidth, []float64{1}, padding, 2)
 
 	// truncateView
 	row1View = TruncateView(row1View, width[0])

@@ -23,8 +23,7 @@ var DefaultStyle = &Style{
 		BorderForeground(lipgloss.Color("240")), // Dim gray
 }
 
-// TODO Remove spacing calculation since I don't want spacing between rows
-func SplitHeightByPercentage(height int, percentages []float64, spacing, padding, borderHeight int) []int {
+func SplitHeightByPercentage(height int, percentages []float64, padding, borderHeight int) []int {
 	numRows := len(percentages)
 	if numRows == 0 {
 		return []int{}
@@ -33,10 +32,9 @@ func SplitHeightByPercentage(height int, percentages []float64, spacing, padding
 	for _, p := range percentages {
 		sum += p
 	}
-	totalSpacing := spacing * (numRows - 1)
 	totalBorderHeight := borderHeight * numRows
 	totalPadding := padding * numRows
-	usableHeight := height - totalSpacing - totalPadding - totalBorderHeight
+	usableHeight := height - totalPadding - totalBorderHeight
 	allocatedHeight := 0
 	heights := make([]int, numRows)
 	for i, p := range percentages {
@@ -50,7 +48,7 @@ func SplitHeightByPercentage(height int, percentages []float64, spacing, padding
 	return heights
 }
 
-func SplitWidthByPercentage(width int, percentages []float64, spacing, padding, borderWidth int) []int {
+func SplitWidthByPercentage(width int, percentages []float64, padding, borderWidth int) []int {
 	numCols := len(percentages)
 	if numCols == 0 {
 		return []int{}
@@ -59,10 +57,9 @@ func SplitWidthByPercentage(width int, percentages []float64, spacing, padding, 
 	for _, p := range percentages {
 		sum += p
 	}
-	totalSpacing := spacing * (numCols - 1)
 	totalBorderWidth := borderWidth * numCols
 	totalPadding := padding * numCols
-	usableWidth := width - totalSpacing - totalPadding - totalBorderWidth
+	usableWidth := width - totalPadding - totalBorderWidth
 
 	allocatedWidth := 0
 	widths := make([]int, numCols)
@@ -77,21 +74,6 @@ func SplitWidthByPercentage(width int, percentages []float64, spacing, padding, 
 	widths[len(widths)-1] += remainder
 
 	return widths
-}
-
-func AddSpacerInBetween(views []string, spacer string) []string {
-	if len(views) == 0 {
-		return nil
-	}
-
-	out := make([]string, 0, len(views)*2-1)
-	for i, c := range views {
-		if i > 0 {
-			out = append(out, spacer)
-		}
-		out = append(out, c)
-	}
-	return out
 }
 
 func TruncateView(view string, length int) string {
