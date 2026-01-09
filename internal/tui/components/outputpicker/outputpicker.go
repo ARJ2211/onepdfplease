@@ -11,21 +11,17 @@ import (
 )
 
 var (
-	focusedStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
-	blurredStyle        = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
-	cursorStyle         = focusedStyle
-	noStyle             = lipgloss.NewStyle()
-	helpStyle           = blurredStyle
-	cursorModeHelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("244"))
-
-	focusedButton = focusedStyle.Render("[ Submit ]")
-	blurredButton = fmt.Sprintf("[ %s ]", blurredStyle.Render("Submit"))
+	focusedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
+	blurredStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("240"))
+	cursorStyle  = focusedStyle
+	noStyle      = lipgloss.NewStyle()
 )
 
 type Model struct {
 	FocusIndex int
 	Inputs     []textinput.Model
 	CursorMode cursor.Mode
+	ButtonText string
 }
 
 type Field struct {
@@ -37,6 +33,7 @@ func NewModel(fields []Field) Model {
 	m := Model{
 		Inputs:     make([]textinput.Model, len(fields)),
 		CursorMode: cursor.CursorStatic,
+		ButtonText: "Submit",
 	}
 
 	var t textinput.Model
@@ -139,15 +136,10 @@ func (m Model) View() string {
 		}
 	}
 
-	button := &blurredButton
+	button := fmt.Sprintf("[ %s ]", blurredStyle.Render(m.ButtonText)) 
 	if m.FocusIndex == len(m.Inputs) {
-		button = &focusedButton
+		button = fmt.Sprintf("[ %s ]", focusedStyle.Render(m.ButtonText)) 
 	}
-	fmt.Fprintf(&b, "\n\n%s\n\n", *button)
-
-	b.WriteString(helpStyle.Render("cursor mode is "))
-	b.WriteString(cursorModeHelpStyle.Render(m.CursorMode.String()))
-	b.WriteString(helpStyle.Render(" (ctrl+r to change style)"))
-
+	fmt.Fprintf(&b, "\n\n%s\n\n", button)
 	return b.String()
 }

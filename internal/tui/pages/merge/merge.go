@@ -30,6 +30,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 		},
 	}
 	op := outputpicker.NewModel(outputFields)
+	op.ButtonText = "Merge and Save"
 	return Model{
 		fileList:     lf,
 		outputPicker: op,
