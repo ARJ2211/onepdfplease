@@ -35,17 +35,19 @@ type Field struct {
 
 func NewModel(fields []Field) Model {
 	m := Model{
-		Inputs: make([]textinput.Model, len(fields)),
+		Inputs:     make([]textinput.Model, len(fields)),
+		CursorMode: cursor.CursorStatic,
 	}
 
 	var t textinput.Model
 	for i := range m.Inputs {
 		t = textinput.New()
 		t.Cursor.Style = cursorStyle
-		t.CharLimit = 64 
+		t.CharLimit = 64
 		t.Width = 20
 		t.Placeholder = fields[i].Placeholder
 		t.Prompt = fields[i].Prompt
+		t.Cursor.SetMode(m.CursorMode)
 		if i == 0 {
 			t.Focus()
 		}
@@ -66,18 +68,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "esc":
 			return m, tea.Quit
-
-		// Change cursor mode
-		case "ctrl+r":
-			m.CursorMode++
-			if m.CursorMode > cursor.CursorHide {
-				m.CursorMode = cursor.CursorBlink
-			}
-			cmds := make([]tea.Cmd, len(m.Inputs))
-			for i := range m.Inputs {
-				cmds[i] = m.Inputs[i].Cursor.SetMode(m.CursorMode)
-			}
-			return m, tea.Batch(cmds...)
 
 		// Set focus to next input
 		case "shift+tab", "enter", "up", "down":
