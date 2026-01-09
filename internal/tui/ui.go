@@ -1,12 +1,14 @@
 package tui
 
 import (
+	"log"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/menu"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/merge"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
-	"log"
 )
 
 type model struct {
@@ -42,7 +44,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.quitting = true
 			return m, tea.Quit
 		}
-	case types.NavigateMsg:
+	case messages.NavigateMsg:
 		m.currentPage = msg.Page
 		return m, nil
 	}

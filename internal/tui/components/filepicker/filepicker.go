@@ -18,8 +18,8 @@ import (
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
-	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
 
 type Model struct {
@@ -69,7 +69,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			return m, tea.Quit
 		case "ctrl+y":
 			return m, func() tea.Msg {
-				return types.QuitFilePickerMsg{Paths: m.SelectedFiles} // TODO: use reference here
+				return messages.QuitFilePickerMsg{Paths: m.SelectedFiles} // TODO: use reference here
 			}
 		}
 	case clearErrorMsg:

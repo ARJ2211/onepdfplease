@@ -9,6 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
@@ -98,7 +99,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			if ok {
 				// log.Println("navigating to:" + string(i.title))
 				return m, func() tea.Msg {
-					return types.NavigateMsg{Page: i.page}
+					return messages.NavigateMsg{Page: i.page}
 				}
 			}
 

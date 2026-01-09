@@ -6,13 +6,13 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 )
 
-func Merge(inFiles []string, outFile string) tea.Cmd{
+func Merge(inFiles []string, outFile string) tea.Cmd {
 	return func() tea.Msg {
 		err := api.MergeCreateFile(inFiles, outFile, false, nil)
 		if err != nil {
 			return messages.PDFOperationStatus{
 				TaskType: "PDF merging",
-				Err: err,
+				Err:      err,
 			}
 		}
 

@@ -15,7 +15,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/filepicker"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
-	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 )
 
 var (
@@ -108,7 +108,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.files.CursorUp()
 			return m, nil
 		}
-	case types.QuitFilePickerMsg:
+	case messages.QuitFilePickerMsg:
 		for _, path := range msg.Paths {
 			m.files.InsertItem(len(m.files.Items()), file{path: path})
 		}

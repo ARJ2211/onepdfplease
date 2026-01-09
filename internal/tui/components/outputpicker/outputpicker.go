@@ -71,7 +71,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			s := msg.String()
 
 			// Did the user press enter while the submit button was focused?
-			// If so, exit.
 			if s == "enter" && m.FocusIndex == len(m.Inputs) {
 				return m, tea.Quit
 			}
