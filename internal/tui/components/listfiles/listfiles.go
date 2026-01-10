@@ -140,17 +140,12 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 func (m Model) View() string {
 	filesView := m.files.View()
-	helpView := helpStyle.Render(m.help.View(m.keys))
 
 	if m.PickingFile {
 		return m.filePicker.View()
 	}
 
-	return "\n" + lipgloss.JoinVertical(
-		lipgloss.Left,
-		filesView,
-		helpView,
-	)
+	return "\n" + filesView 
 }
 
 func (m *Model) swapItems(idx1, idx2 int) {
