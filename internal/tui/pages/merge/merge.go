@@ -58,6 +58,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case messages.OutputButtonClicked:
 		return m, utils.Merge(m.fileList.GetFilePaths(), "./merged.pdf")
+	// TODO add proper error handeling
 	case messages.PDFOperationStatus:
 		log.Println("opError", msg.Err, msg.TaskType)
 	}
