@@ -75,7 +75,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 	l.SetFilteringEnabled(false)
 	l.Styles.Title = titleStyle
 	l.Styles.PaginationStyle = paginationStyle
-	l.Styles.HelpStyle = helpStyle
+	l.SetShowHelp(false)
 	return Model{
 		tools: l,
 		ctx:   ctx,
@@ -94,7 +94,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
 		case "enter":
-			// TODO: change pages here
 			i, ok := m.tools.SelectedItem().(item)
 			if ok {
 				// log.Println("navigating to:" + string(i.title))
@@ -114,5 +113,11 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 func (m Model) View() string {
 	toolsView := style.DefaultStyle.FocusedBorder.Render(m.tools.View())
-	return lipgloss.Place(m.ctx.TermWidth, m.ctx.MainContentHeight, lipgloss.Center, lipgloss.Center, toolsView)
+	return lipgloss.Place(
+		m.ctx.TermWidth,
+		m.ctx.MainContentHeight,
+		lipgloss.Center,
+		lipgloss.Center,
+		toolsView,
+	)
 }
