@@ -40,7 +40,7 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 	case types.MenuPage:
 		additionalKeys = MenuFullHelp()
 	default:
-		additionalKeys = MenuFullHelp()
+		additionalKeys = k.GlobalFullHelp()
 	}
 
 	allKeys := append(additionalKeys, k.GlobalKeys())
@@ -51,5 +51,12 @@ func (k KeyMap) GlobalKeys() []key.Binding {
 	return []key.Binding{
 		k.Help,
 		k.Quit,
+	}
+}
+
+func (k KeyMap) GlobalFullHelp() [][]key.Binding {
+	return [][]key.Binding{
+		{k.Help},
+		{k.Quit},
 	}
 }
