@@ -58,7 +58,7 @@ func Encrypt(inFiles []string, password, outFilePath, outFilePrefix string) tea.
 
 		var failedFiles []string
 		for _, f := range inFiles {
-			outFile := outFilePath + outFilePrefix + filepath.Base(f)
+			outFile := filepath.Join(outFilePath, outFilePrefix+filepath.Base(f))
 			if err := api.EncryptFile(f, outFile, conf); err != nil {
 				failedFiles = append(failedFiles, filepath.Base(f))
 			}
