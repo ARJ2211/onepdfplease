@@ -35,7 +35,7 @@ func Merge(inFiles []string, outFile string) tea.Cmd {
 
 func Encrypt(inFiles []string, password, outFilePath, outFilePrefix string) tea.Cmd {
 	return func() tea.Msg {
-		taskType := "Encrypt"
+		taskType := "Encryption"
 		if len(password) == 0 {
 			return messages.PDFOperationStatus{
 				TaskType: taskType,
