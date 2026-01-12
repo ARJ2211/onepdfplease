@@ -22,7 +22,6 @@ var (
 	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
 	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
 	paginationStyle   = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
-	helpStyle         = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1)
 )
 
 type file struct {
