@@ -77,7 +77,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			return m, tea.Quit
 
 		// Set focus to next input
-		case "shift+tab", "enter", "up", "down":
+		case "enter", "up", "down", "ctrl+n", "ctrl+p":
 			s := msg.String()
 
 			// Did the user press enter while the submit button was focused?
@@ -88,7 +88,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 
 			// Cycle indexes
-			if s == "up" || s == "shift+tab" {
+			if s == "up" || s == "ctrl+p" {
 				m.FocusIndex--
 			} else {
 				m.FocusIndex++
