@@ -39,6 +39,8 @@ func (k KeyMap) FullHelp() [][]key.Binding {
 		additionalKeys = MergeFullHelp()
 	case types.MenuPage:
 		additionalKeys = MenuFullHelp()
+	case types.EncryptPage:
+		additionalKeys = EncryptFullHelp()
 	default:
 		additionalKeys = k.GlobalFullHelp()
 	}
