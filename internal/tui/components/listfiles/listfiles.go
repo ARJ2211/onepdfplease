@@ -6,8 +6,6 @@ package listfiles
 // add output file defaults and user able to edit it eg: output file: /home/user/Downloads/merge.pdf
 // seperate help view from this to render it outside in any place
 import (
-	"log"
-
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
@@ -15,8 +13,8 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/filepicker"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
-	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/keys"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 )
 
 var (
@@ -103,10 +101,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.files.RemoveItem(m.files.GlobalIndex())
 			m.files.CursorUp()
 			return m, nil
-		case key.Matches(msg, m.keys.Merge):
-			log.Println("merging PDFs")
-		case key.Matches(msg, m.keys.Save):
-			log.Println("saving PDFs")
 		case key.Matches(msg, m.keys.ShiftDown):
 			curIdx := m.files.GlobalIndex()
 			m.swapItems(curIdx, curIdx+1)
@@ -143,7 +137,7 @@ func (m Model) View() string {
 		return m.filePicker.View()
 	}
 
-	return "\n" + filesView 
+	return "\n" + filesView
 }
 
 func (m *Model) swapItems(idx1, idx2 int) {
