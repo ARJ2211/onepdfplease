@@ -1,4 +1,4 @@
-package outputpicker
+package userinputs
 
 import (
 	"fmt"

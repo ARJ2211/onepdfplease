@@ -7,7 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/listfiles"
-	"github.com/chetanjangir0/onepdfplease/internal/tui/components/outputpicker"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/components/userinputs"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
@@ -17,7 +17,7 @@ import (
 type Model struct {
 	focusIndex   int // 0 for fileList 1 for outputPicker
 	fileList     listfiles.Model
-	outputPicker outputpicker.Model
+	outputPicker userinputs.Model
 	ctx          *context.ProgramContext
 }
 
@@ -25,13 +25,13 @@ func NewModel(ctx *context.ProgramContext) Model {
 	lf := listfiles.NewModel(ctx)
 	lf.SetTitle("Choose Order")
 
-	outputFields := []outputpicker.Field{
+	outputFields := []userinputs.Field{
 		{
 			Placeholder: "./merged.pdf",
 			Prompt:      "Output File: ",
 		},
 	}
-	op := outputpicker.NewModel(outputFields)
+	op := userinputs.NewModel(outputFields)
 	op.ButtonText = "Merge and Save"
 	return Model{
 		fileList:     lf,
