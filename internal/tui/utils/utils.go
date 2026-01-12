@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -14,10 +15,20 @@ import (
 func Merge(inFiles []string, outFile string) tea.Cmd {
 	return func() tea.Msg {
 		taskType := "Merge"
-		if len(inFiles) == 0 {
+
+		for _, f := range inFiles {
+			if _, err := os.Stat(f); err != nil {
+				return messages.PDFOperationStatus{
+					TaskType: taskType,
+					Err:      fmt.Errorf("file not found: %s", f),
+				}
+			}
+		}
+
+		if len(inFiles) <= 1 {
 			return messages.PDFOperationStatus{
 				TaskType: taskType,
-				Err:      fmt.Errorf("There are no files to merge"),
+				Err:      fmt.Errorf("At least 2 files required for merge"),
 			}
 		}
 		err := api.MergeCreateFile(inFiles, outFile, false, nil)
