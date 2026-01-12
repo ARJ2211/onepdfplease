@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
@@ -12,23 +13,23 @@ import (
 
 func Merge(inFiles []string, outFile string) tea.Cmd {
 	return func() tea.Msg {
-		tasktype := "Merge"
+		taskType := "Merge"
 		if len(inFiles) == 0 {
 			return messages.PDFOperationStatus{
-				TaskType: tasktype,
+				TaskType: taskType,
 				Err:      fmt.Errorf("There are no files to merge"),
 			}
 		}
 		err := api.MergeCreateFile(inFiles, outFile, false, nil)
 		if err != nil {
 			return messages.PDFOperationStatus{
-				TaskType: tasktype,
+				TaskType: taskType,
 				Err:      err,
 			}
 		}
 
 		return messages.PDFOperationStatus{
-			TaskType: tasktype,
+			TaskType: taskType,
 		}
 	}
 }
@@ -55,14 +56,21 @@ func Encrypt(inFiles []string, password, outFilePath, outFilePrefix string) tea.
 		conf.EncryptUsingAES = true
 		conf.EncryptKeyLength = 256
 
+		var failedFiles []string
 		for _, f := range inFiles {
 			outFile := outFilePath + outFilePrefix + filepath.Base(f)
-			err := api.EncryptFile(f, outFile, conf)
-			if err != nil {
-				return messages.PDFOperationStatus{
-					TaskType: taskType,
-					Err:      err,
-				}
+			if err := api.EncryptFile(f, outFile, conf); err != nil {
+				failedFiles = append(failedFiles, filepath.Base(f))
+			}
+		}
+		if len(failedFiles) > 0 {
+			return messages.PDFOperationStatus{
+				TaskType: taskType,
+				Err: fmt.Errorf(
+					"Failed to encrypt %d file(s): %s",
+					len(failedFiles),
+					strings.Join(failedFiles, ","),
+				),
 			}
 		}
 
