@@ -9,6 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 )
 
 var (
@@ -139,6 +140,7 @@ func (m *Model) updateInputs(msg tea.Msg) tea.Cmd {
 
 func (m Model) View() string {
 	var b strings.Builder
+	b.WriteRune('\n')
 
 	for i := range m.Inputs {
 		b.WriteString(m.Inputs[i].View())
@@ -152,5 +154,5 @@ func (m Model) View() string {
 		button = fmt.Sprintf("[ %s ]", focusedStyle.Render(m.ButtonText)) 
 	}
 	fmt.Fprintf(&b, "\n\n%s\n\n", button)
-	return b.String()
+	return style.DefaultStyle.MarginLeftStyle.Render(b.String())
 }
