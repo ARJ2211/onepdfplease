@@ -30,6 +30,15 @@ type Field struct {
 	Prompt      string
 }
 
+func (m Model) GetInputValues() []string {
+	values := make([]string, len(m.Inputs))
+	
+	for i, Inp := range m.Inputs {
+		values[i] = Inp.Value()
+	}
+	return values
+}
+
 func NewModel(fields []Field) Model {
 	m := Model{
 		Inputs:     make([]textinput.Model, len(fields)),
