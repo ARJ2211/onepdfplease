@@ -92,3 +92,48 @@ func Encrypt(inFiles []string, password, outFilePath, outFilePrefix string) tea.
 	}
 
 }
+
+func Decrypt(inFiles []string, password, outFilePath, outFilePrefix string) tea.Cmd {
+	return func() tea.Msg {
+		taskType := "Decryption"
+		if len(password) == 0 {
+			return messages.PDFOperationStatus{
+				TaskType: taskType,
+				Err:      fmt.Errorf("Please provide a password"),
+			}
+
+		}
+		if len(inFiles) == 0 {
+			return messages.PDFOperationStatus{
+				TaskType: taskType,
+				Err:      fmt.Errorf("There are no files to decrypt"),
+			}
+		}
+		conf := model.NewDefaultConfiguration()
+		conf.UserPW = password
+
+		var failedFiles []string
+		for _, f := range inFiles {
+			outFile := filepath.Join(outFilePath, outFilePrefix+filepath.Base(f))
+			if err := api.DecryptFile(f, outFile, conf); err != nil {
+				failedFiles = append(failedFiles, filepath.Base(f))
+			}
+		}
+		if len(failedFiles) > 0 {
+			return messages.PDFOperationStatus{
+				TaskType: taskType,
+				Err: fmt.Errorf(
+					"Failed to decrypt %d file(s): %s",
+					len(failedFiles),
+					strings.Join(failedFiles, ","),
+				),
+			}
+		}
+
+		return messages.PDFOperationStatus{
+			TaskType: taskType,
+		}
+
+	}
+
+}
