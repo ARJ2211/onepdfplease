@@ -64,6 +64,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 		item{title: "Merge PDFs", page: types.MergePage},
 		item{title: "Split PDF", page: types.SplitPage},
 		item{title: "Encrypt PDF", page: types.EncryptPage},
+		item{title: "Decrypt PDF", page: types.DecryptPage},
 	}
 
 	const defaultWidth = 20

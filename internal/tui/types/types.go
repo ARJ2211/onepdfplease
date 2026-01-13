@@ -7,4 +7,5 @@ const (
 	MergePage
 	SplitPage
 	EncryptPage
+	DecryptPage
 )
