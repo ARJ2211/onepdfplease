@@ -63,8 +63,8 @@ func NewModel(ctx *context.ProgramContext) Model {
 	items := []list.Item{
 		item{title: "Merge PDFs", page: types.MergePage},
 		item{title: "Split PDF", page: types.SplitPage},
-		item{title: "Encrypt PDF", page: types.EncryptPage},
-		item{title: "Decrypt PDF", page: types.DecryptPage},
+		item{title: "Encrypt PDFs", page: types.EncryptPage},
+		item{title: "Decrypt PDFs", page: types.DecryptPage},
 	}
 
 	const defaultWidth = 20
