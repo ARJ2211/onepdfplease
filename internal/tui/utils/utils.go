@@ -1,4 +1,6 @@
 package utils
+// TODO:
+// show all errors when batch encrypt and decrypt using floating component
 
 import (
 	"fmt"
