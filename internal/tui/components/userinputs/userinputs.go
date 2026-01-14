@@ -32,15 +32,19 @@ type Field struct {
 	Prompt      string
 }
 
-func (m *Model) EnableInput(idx int) {
-	if m.Disabled[idx] {
-		m.Disabled[idx] = false
+func (m *Model) EnableInput(indxes []int) {
+	for _, inputIdx := range indxes {
+		if m.Disabled[inputIdx] {
+			m.Disabled[inputIdx] = false
+		}
 	}
 }
 
-func (m *Model) DisableInput(idx int) {
-	if !m.Disabled[idx] {
-		m.Disabled[idx] = true
+func (m *Model) DisableInput(indxes []int) {
+	for _, inputIdx := range indxes {
+		if !m.Disabled[inputIdx] {
+			m.Disabled[inputIdx] = true
+		}
 	}
 }
 
