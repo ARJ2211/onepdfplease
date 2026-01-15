@@ -5,10 +5,11 @@ import (
 )
 
 type FileListKeymap struct {
-	Add       key.Binding
-	Remove    key.Binding
-	ShiftUp   key.Binding
-	ShiftDown key.Binding
+	Add            key.Binding
+	Remove         key.Binding
+	ShiftUp        key.Binding
+	ShiftDown      key.Binding
+	QuitFilepicker key.Binding
 }
 
 var FileListKeys = FileListKeymap{
@@ -27,5 +28,9 @@ var FileListKeys = FileListKeymap{
 	ShiftUp: key.NewBinding(
 		key.WithKeys("K", "ctrl+up"),
 		key.WithHelp("K/ctrl+up", "Shift Up"),
+	),
+	QuitFilepicker: key.NewBinding(
+		key.WithKeys("esc"),
+		key.WithHelp("esc", "Go Back"),
 	),
 }

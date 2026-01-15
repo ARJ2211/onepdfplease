@@ -11,7 +11,6 @@ import (
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/filepicker"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/keys"
-	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 )
 
 var (
@@ -66,6 +65,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 	l.Styles.PaginationStyle = paginationStyle
 	l.SetShowHelp(false) // instead using custom help menu
 	l.Styles.NoItems = l.Styles.NoItems.PaddingLeft(l.Styles.TitleBar.GetPaddingLeft())
+	l.KeyMap.Quit.SetEnabled(false)
 
 	fp := filepicker.NewModel(ctx)
 
@@ -107,12 +107,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			m.swapItems(curIdx, curIdx-1)
 			m.files.CursorUp()
 			return m, nil
+		case key.Matches(msg, m.keys.QuitFilepicker):
+			if !m.PickingFile {
+				return m, nil
+			}
+			for _, path := range m.filePicker.SelectedFiles {
+				m.files.InsertItem(len(m.files.Items()), file{path: path})
+			}
+			m.PickingFile = false
 		}
-	case messages.QuitFilePicker:
-		for _, path := range msg.Paths {
-			m.files.InsertItem(len(m.files.Items()), file{path: path})
-		}
-		m.PickingFile = false
 	}
 
 	var cmd tea.Cmd

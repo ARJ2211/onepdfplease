@@ -11,8 +11,4 @@ type Navigate struct {
 	Page types.Page
 }
 
-type QuitFilePicker struct {
-	Paths []string
-}
-
 type OutputButtonClicked struct {}
