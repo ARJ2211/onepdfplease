@@ -115,6 +115,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				m.files.InsertItem(len(m.files.Items()), file{path: path})
 			}
 			m.PickingFile = false
+			return m, nil
 		}
 	}
 
