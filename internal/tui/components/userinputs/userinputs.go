@@ -110,10 +110,17 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			}
 		case "left", "right", "h", "l":
 			if m.BoolInput[m.FocusIndex] {
-				if m.Inputs[m.FocusIndex].Value() == "yes" {
-					m.Inputs[m.FocusIndex].SetValue("no")
-				} else {
-					m.Inputs[m.FocusIndex].SetValue("yes")
+				newValue := "no"
+				if m.Inputs[m.FocusIndex].Value() == "no" {
+					newValue = "yes"
+				}
+				m.Inputs[m.FocusIndex].SetValue(newValue)
+
+				return m, func() tea.Msg {
+					return messages.BoolInputToggled{
+						InputIndex: m.FocusIndex,
+						Value:      newValue == "yes",
+					}
 				}
 			}
 			return m, nil
