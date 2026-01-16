@@ -1,5 +1,9 @@
 package userinputs
 
+// TODO
+// Add bool type inputs
+// let the page handle the logic to turn on/off the depended inputs(on bool types)
+
 import (
 	"fmt"
 	"strings"
@@ -20,16 +24,18 @@ var (
 )
 
 type Model struct {
-	FocusIndex   int
-	Inputs       []textinput.Model
-	CursorMode   cursor.Mode
-	ButtonText   string
-	Disabled     map[int]bool
+	FocusIndex int
+	Inputs     []textinput.Model
+	CursorMode cursor.Mode
+	ButtonText string
+	Disabled   map[int]bool
+	BoolInput  map[int]bool
 }
 
 type Field struct {
 	Placeholder string
 	Prompt      string
+	IsBoolType  bool
 }
 
 func (m *Model) EnableInput(indxes []int) {
@@ -70,7 +76,12 @@ func NewModel(fields []Field) Model {
 		t.Cursor.Style = cursorStyle
 		t.CharLimit = 64
 		t.Width = 20
-		t.Placeholder = fields[i].Placeholder
+		if !fields[i].IsBoolType {
+			t.Placeholder = fields[i].Placeholder
+		} else {
+			t.SetValue("no")
+			m.BoolInput[i] = true
+		}
 		t.Prompt = fields[i].Prompt
 		t.Cursor.SetMode(m.CursorMode)
 		if i == 0 {
@@ -92,6 +103,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		// Set focus to next input
+		case "left", "right", "h", "l":
+			if m.BoolInput[m.FocusIndex] {
+				if m.Inputs[m.FocusIndex].Value() == "yes" {
+					m.Inputs[m.FocusIndex].SetValue("no")
+				} else {
+					m.Inputs[m.FocusIndex].SetValue("yes")
+				}
+			}
+			return m, nil
 		case "enter", "up", "down", "ctrl+n", "ctrl+p":
 			s := msg.String()
 
