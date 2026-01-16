@@ -11,6 +11,7 @@ import (
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/utils"
 )
 
@@ -52,6 +53,25 @@ func (m Model) Init() tea.Cmd {
 	return nil
 }
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	var cmd tea.Cmd
+
+    // If file list is picking, give it complete control
+    if m.fileList.PickingFile {
+        m.fileList, cmd = m.fileList.Update(msg)
+        return m, cmd
+    }
+
+	switch m.focusIndex {
+	case 0:
+		m.fileList, cmd = m.fileList.Update(msg)
+	case 1:
+		m.outputPicker, cmd = m.outputPicker.Update(msg)
+	}
+
+	if cmd != nil {
+		return m, cmd
+	}
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -61,6 +81,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		case "shift+tab":
 			m.focusIndex = (m.focusIndex - 1 + 2) % 2
 			return m, nil
+		case "esc":
+			return m, func() tea.Msg {
+				return messages.Navigate{Page: types.MenuPage}
+			}
 		}
 	case messages.OutputButtonClicked:
 		outFile := m.outputPlaceholder
@@ -71,13 +95,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		return m, utils.Merge(m.fileList.GetFilePaths(), outFile)
 	}
 
-	var cmd tea.Cmd
-	switch m.focusIndex {
-	case 0:
-		m.fileList, cmd = m.fileList.Update(msg)
-	case 1:
-		m.outputPicker, cmd = m.outputPicker.Update(msg)
-	}
 
 	return m, cmd
 }
