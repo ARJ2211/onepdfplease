@@ -104,7 +104,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
-		// Set focus to next input
+		case "enter":
+			if m.FocusIndex == len(m.Inputs) {
+				return m, func() tea.Msg { return messages.OutputButtonClicked{} }
+			}
 		case "left", "right", "h", "l":
 			if m.BoolInput[m.FocusIndex] {
 				if m.Inputs[m.FocusIndex].Value() == "yes" {
@@ -114,51 +117,10 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 				}
 			}
 			return m, nil
-		case "enter", "up", "down", "ctrl+n", "ctrl+p":
-			s := msg.String()
-
-			// Did the user press enter while the submit button was focused?
-			if s == "enter" && m.FocusIndex == len(m.Inputs) {
-				return m, func() tea.Msg {
-					return messages.OutputButtonClicked{}
-				}
-			}
-
-			// Cycle indexes
-			if s == "up" || s == "ctrl+p" {
-				m.FocusIndex--
-				for m.Disabled[m.FocusIndex] {
-					m.FocusIndex--
-				}
-			} else {
-				m.FocusIndex++
-				for m.Disabled[m.FocusIndex] {
-					m.FocusIndex++
-				}
-			}
-
-			if m.FocusIndex > len(m.Inputs) {
-				m.FocusIndex = 0
-			} else if m.FocusIndex < 0 {
-				m.FocusIndex = len(m.Inputs)
-			}
-
-			cmds := make([]tea.Cmd, len(m.Inputs))
-			for i := 0; i <= len(m.Inputs)-1; i++ {
-				if i == m.FocusIndex {
-					// Set focused state
-					cmds[i] = m.Inputs[i].Focus()
-					m.Inputs[i].PromptStyle = focusedStyle
-					m.Inputs[i].TextStyle = focusedStyle
-					continue
-				}
-				// Remove focused state
-				m.Inputs[i].Blur()
-				m.Inputs[i].PromptStyle = noStyle
-				m.Inputs[i].TextStyle = noStyle
-			}
-
-			return m, tea.Batch(cmds...)
+		case "up", "ctrl+p":
+			return m.moveFocus(-1)
+		case "down", "ctrl+n":
+			return m.moveFocus(1)
 		}
 	}
 
@@ -166,6 +128,37 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	cmd := m.updateInputs(msg)
 
 	return m, cmd
+}
+
+func (m Model) moveFocus(direction int) (Model, tea.Cmd) {
+	m.FocusIndex += direction
+
+	// skip disabled fields
+	for m.FocusIndex >= 0 && m.FocusIndex < len(m.Inputs) && m.Disabled[m.FocusIndex] {
+		m.FocusIndex += direction
+	}
+	// Wraparound
+	if m.FocusIndex > len(m.Inputs) {
+		m.FocusIndex = 0
+	} else if m.FocusIndex < 0 {
+		m.FocusIndex = len(m.Inputs)
+	}
+
+	// Update focus styling
+	cmds := make([]tea.Cmd, 0, len(m.Inputs))
+	for i := range m.Inputs {
+		if i == m.FocusIndex {
+			cmds = append(cmds, m.Inputs[i].Focus())
+			m.Inputs[i].PromptStyle = focusedStyle
+			m.Inputs[i].TextStyle = focusedStyle
+		} else {
+			m.Inputs[i].Blur()
+			m.Inputs[i].PromptStyle = noStyle
+			m.Inputs[i].TextStyle = noStyle
+		}
+	}
+
+	return m, tea.Batch(cmds...)
 }
 
 func (m *Model) updateInputs(msg tea.Msg) tea.Cmd {
