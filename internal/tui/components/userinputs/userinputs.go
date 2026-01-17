@@ -123,7 +123,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 					}
 				}
 			}
-			return m, nil
 		case "up", "ctrl+p":
 			return m.moveFocus(-1)
 		case "down", "ctrl+n":
