@@ -1,9 +1,8 @@
 package split
 
 // TODO:
-// only allow one file
 // add verification to ranges of pages
-// add 1 file accepting policy to the filelist component
+// set option to extract all pages to yes by default
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
@@ -39,7 +38,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 	m := Model{
 		pathPlaceholder:          "./",
 		prefixPlaceholder:        "split_",
-		selectedPagesPlaceholder: "example: 1,4-5",
+		selectedPagesPlaceholder: `1,3,even,!4,4-10,2-`,
 	}
 	lf := listfiles.NewModel(ctx)
 	lf.SetTitle("Choose Files")
@@ -116,9 +115,9 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		}
 	case messages.BoolInputToggled:
 		if msg.InputIndex == exteractAllIdx {
-			if msg.Value { 
+			if msg.Value {
 				m.userInputs.DisableInput([]int{mergeIntoOneIdx, pathIdx, prefixIdx, selectedPagesIdx})
-			} else { 
+			} else {
 				m.userInputs.EnableInput([]int{mergeIntoOneIdx, pathIdx, prefixIdx, selectedPagesIdx})
 			}
 		}
