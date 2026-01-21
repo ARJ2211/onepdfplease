@@ -5,6 +5,8 @@ package split
 // set option to extract all pages to yes by default
 
 import (
+	"strings"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/listfiles"
@@ -38,7 +40,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 	m := Model{
 		pathPlaceholder:          "./",
 		prefixPlaceholder:        "split_",
-		selectedPagesPlaceholder: `1,3,even,!4,4-10,2-`,
+		selectedPagesPlaceholder: `1,3,even,4-10,2-`,
 	}
 	lf := listfiles.NewModel(ctx)
 	lf.SetTitle("Choose Files")
@@ -146,7 +148,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 			selectedPages = userValues[selectedPagesIdx]
 		}
 
-		return m, utils.Split(m.fileList.GetFilePaths(), outPath, outPrefix, []string{selectedPages}, mergeIntoOne, extractAllPages)
+		return m, utils.Split(m.fileList.GetFilePaths(), outPath, outPrefix, strings.Split(selectedPages, ","), mergeIntoOne, extractAllPages)
 	}
 
 	return m, cmd
