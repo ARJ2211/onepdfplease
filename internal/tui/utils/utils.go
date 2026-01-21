@@ -151,9 +151,22 @@ func Decrypt(inFiles []string, password, outFilePath, outFilePrefix string, inPl
 
 }
 
-func Split(inFile, outFilePath, outFilePrefix string, selectedPages []string, mergeIntoOne bool) tea.Cmd {
+func Split(inFiles []string, outFilePath, outFilePrefix string, selectedPages []string, mergeIntoOne bool) tea.Cmd {
 	return func() tea.Msg {
 		taskType := "Splitting"
+
+		if len(inFiles) > 1 {
+			return messages.PDFOperationStatus{
+				TaskType: taskType,
+				Err:      fmt.Errorf("You can only split one file at a time"),
+			}
+		} else if len(inFiles) == 0 {
+			return messages.PDFOperationStatus{
+				TaskType: taskType,
+				Err:      fmt.Errorf("Please add a file first"),
+			}
+		}
+		inFile := inFiles[0]
 
 		if mergeIntoOne {
 			outFile := filepath.Join(outFilePath, outFilePrefix+filepath.Base(inFile))
