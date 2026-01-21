@@ -13,6 +13,7 @@ import (
 	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/encrypt"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/menu"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/merge"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/pages/split"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
 )
@@ -26,6 +27,7 @@ type model struct {
 	mergeModel   merge.Model
 	encryptModel encrypt.Model
 	decryptModel decrypt.Model
+	splitModel   split.Model
 	footer       footer.Model
 }
 
@@ -39,6 +41,7 @@ func InitialModel() model {
 	m.mergeModel = merge.NewModel(m.ctx)
 	m.encryptModel = encrypt.NewModel(m.ctx)
 	m.decryptModel = decrypt.NewModel(m.ctx)
+	m.splitModel = split.NewModel(m.ctx)
 	m.footer = footer.NewModel(m.ctx)
 	return m
 }
@@ -88,6 +91,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.encryptModel, cmd = m.encryptModel.Update(msg)
 	case types.DecryptPage:
 		m.decryptModel, cmd = m.decryptModel.Update(msg)
+	case types.SplitPage:
+		m.splitModel, cmd = m.splitModel.Update(msg)
 	}
 
 	return m, cmd
@@ -104,6 +109,8 @@ func (m model) View() string {
 		view = m.encryptModel.View()
 	case types.DecryptPage:
 		view = m.decryptModel.View()
+	case types.SplitPage:
+		view = m.splitModel.View()
 	}
 	return lipgloss.JoinVertical(lipgloss.Left, view, m.footer.View())
 
