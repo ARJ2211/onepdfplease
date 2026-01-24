@@ -95,7 +95,7 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, m.keys.Add):
 			m.PickingFile = true
-			m.filePicker = filepicker.NewModel(m.ctx)
+			m.filePicker.ClearSelected()
 			return m, m.filePicker.Init()
 		case key.Matches(msg, m.keys.Remove):
 			m.files.RemoveItem(m.files.GlobalIndex())

@@ -48,6 +48,10 @@ func NewModel(ctx *context.ProgramContext) Model {
 	}
 }
 
+func (m *Model) ClearSelected() {
+	m.SelectedFiles = nil 
+}
+
 func (m Model) Init() tea.Cmd {
 	return m.filepicker.Init()
 }
