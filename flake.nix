@@ -24,7 +24,7 @@
           inherit pname version;
           src = ./.;
 
-          vendorHash = pkgs.lib.fakeHash;
+          vendorHash = "sha256-NIo8O1BsQP0J80QBjqB6M/2ihFu9R+MIpZR6MU1jO2c=";
 
           proxyVendor = true;
 
