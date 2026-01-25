@@ -2,6 +2,7 @@ package utils
 
 // TODO:
 // show all errors when batch encrypt and decrypt using floating component
+// show err when saving a file that already exists
 
 import (
 	"fmt"
@@ -220,7 +221,7 @@ func Split(inFiles []string, outFilePath, outFilePrefix string, selectedPages []
 func Img2Pdf(inFiles []string, outFile string, mergeIntoOne bool) tea.Cmd {
 	return func() tea.Msg {
 		taskType := "Image to Pdf"
-		successMsg :=  messages.PDFOperationStatus{
+		successMsg := messages.PDFOperationStatus{
 			TaskType: taskType,
 		}
 
@@ -240,7 +241,7 @@ func Img2Pdf(inFiles []string, outFile string, mergeIntoOne bool) tea.Cmd {
 			}
 		}
 		if mergeIntoOne {
-			err := api.ImportImagesFile(inFiles, outFile, nil, nil)
+			err := api.ImportImagesFile(inFiles, getNextAvailablePath(outFile), nil, nil)
 			if err != nil {
 				return messages.PDFOperationStatus{
 					TaskType: taskType,
@@ -250,10 +251,9 @@ func Img2Pdf(inFiles []string, outFile string, mergeIntoOne bool) tea.Cmd {
 			return successMsg
 		}
 
-		// TODO: add suffix instead of prefix numbering
 		var failedFiles []string
-		for i, inFile := range inFiles {
-			err := api.ImportImagesFile([]string{inFile}, fmt.Sprintf("%d_%s", i+1, outFile), nil, nil)
+		for _, inFile := range inFiles {
+			err := api.ImportImagesFile([]string{inFile}, getNextAvailablePath(outFile), nil, nil)
 			if err != nil {
 				failedFiles = append(failedFiles, filepath.Base(inFile))
 			}
@@ -272,5 +272,24 @@ func Img2Pdf(inFiles []string, outFile string, mergeIntoOne bool) tea.Cmd {
 
 		return successMsg
 
+	}
+}
+
+func getNextAvailablePath(basePath string) string {
+	if _, err := os.Stat(basePath); err != nil {
+		return basePath
+	}
+
+	ext := filepath.Ext(basePath)
+	nameWithoutExt := strings.TrimSuffix(basePath, ext)
+
+	counter := 1
+	for {
+		newPath := fmt.Sprintf("%s_%d%s", nameWithoutExt, counter, ext)
+
+		if _, err := os.Stat(newPath); os.IsNotExist(err) {
+			return newPath
+		}
+		counter++
 	}
 }
