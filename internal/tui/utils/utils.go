@@ -35,7 +35,7 @@ func Merge(inFiles []string, outFile string) tea.Cmd {
 				Err:      fmt.Errorf("At least 2 files required for merge"),
 			}
 		}
-		err := api.MergeCreateFile(inFiles, outFile, false, nil)
+		err := api.MergeCreateFile(inFiles, getNextAvailablePath(outFile), false, nil)
 		if err != nil {
 			return messages.PDFOperationStatus{
 				TaskType: taskType,
@@ -76,6 +76,7 @@ func Encrypt(inFiles []string, password, outFilePath, outFilePrefix string, inPl
 			var outFile string
 			if !inPlace {
 				outFile = filepath.Join(outFilePath, outFilePrefix+filepath.Base(f))
+				outFile = getNextAvailablePath(outFile)
 			} else {
 				outFile = ""
 			}
@@ -126,6 +127,7 @@ func Decrypt(inFiles []string, password, outFilePath, outFilePrefix string, inPl
 			var outFile string
 			if !inPlace {
 				outFile = filepath.Join(outFilePath, outFilePrefix+filepath.Base(f))
+				outFile = getNextAvailablePath(outFile)
 			} else {
 				outFile = ""
 			}
@@ -185,6 +187,7 @@ func Split(inFiles []string, outFilePath, outFilePrefix string, selectedPages []
 
 		if mergeIntoOne {
 			outFile := filepath.Join(outFilePath, outFilePrefix+filepath.Base(inFile))
+			outFile = getNextAvailablePath(outFile)
 			if err := api.TrimFile(inFile, outFile, selectedPages, nil); err != nil {
 				return messages.PDFOperationStatus{
 					TaskType: taskType,
@@ -198,6 +201,7 @@ func Split(inFiles []string, outFilePath, outFilePrefix string, selectedPages []
 		var failedRanges []string
 		for _, pageRange := range selectedPages {
 			outFile := filepath.Join(outFilePath, outFilePrefix+pageRange+".pdf")
+			outFile = getNextAvailablePath(outFile)
 			if err := api.TrimFile(inFile, outFile, []string{pageRange}, nil); err != nil {
 				failedRanges = append(failedRanges, pageRange)
 			}
