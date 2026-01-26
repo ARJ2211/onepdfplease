@@ -54,9 +54,23 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 }
 
 type Model struct {
-	tools  list.Model
-	choice string
-	ctx    *context.ProgramContext
+	tools      list.Model
+	choice     string
+	ctx        *context.ProgramContext
+	listHeight int
+}
+
+func (m *Model) onWindowSizeChanged() {
+	m.tools.SetWidth(m.ctx.TermWidth)
+
+	// make height more responsive
+	borderHeight := 1
+	contentHeight := m.listHeight + 2*borderHeight
+	if m.ctx.TermHeight < contentHeight {
+		m.tools.SetHeight(m.ctx.TermHeight - 2*borderHeight - 1)
+	} else {
+		m.tools.SetHeight(m.listHeight)
+	}
 }
 
 func NewModel(ctx *context.ProgramContext) Model {
@@ -70,7 +84,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 	}
 
 	const defaultWidth = 20
-	const listHeight = 14
+	const listHeight = 10
 
 	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
 	l.Title = "What tool do you want to use?"
@@ -81,8 +95,9 @@ func NewModel(ctx *context.ProgramContext) Model {
 	l.SetShowHelp(false)
 	l.KeyMap.Quit.SetEnabled(false)
 	return Model{
-		tools: l,
-		ctx:   ctx,
+		tools:      l,
+		ctx:        ctx,
+		listHeight: listHeight,
 	}
 }
 
@@ -92,7 +107,7 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		m.tools.SetWidth(msg.Width)
+		m.onWindowSizeChanged()
 		return m, nil
 
 	case tea.KeyMsg:
