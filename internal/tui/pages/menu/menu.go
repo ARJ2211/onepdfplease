@@ -66,8 +66,8 @@ func (m *Model) onWindowSizeChanged() {
 	// make height more responsive
 	borderHeight := 1
 	contentHeight := m.listHeight + 2*borderHeight
-	if m.ctx.TermHeight < contentHeight {
-		m.tools.SetHeight(m.ctx.TermHeight - 2*borderHeight - 1)
+	if m.ctx.MainContentHeight < contentHeight {
+		m.tools.SetHeight(m.ctx.MainContentHeight - 2*borderHeight)
 	} else {
 		m.tools.SetHeight(m.listHeight)
 	}
