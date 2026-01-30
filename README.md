@@ -1,31 +1,62 @@
-
 # OnePDFPlease - A TUI for working with PDFs
 
 A terminal-based PDF toolkit with vim keybindings providing a keyboard-driven
-interface for various pdf releated tasks to ease the pain of working with pdfs 
+interface for various pdf releated tasks to ease the pain of working with pdfs
 
 ---
 
 ## Features
 
 - Merge Pdfs
-- Split Pdfs 
+- Split Pdfs
 - Encrypt Pdfs
 - Decrypt Pdfs
 - Convert images to pdf
 - Extract embeded images from pdf
-- Vim-style keybindings (`j`/`k` for navigation)  
-- Minimal UI with clear feedback and status  
+- Vim-style keybindings (`j`/`k` for navigation)
+- Minimal UI with clear feedback and status
 
 ---
 
-## Requirements for manual installation
+## Run without installation (Works Only on Nix/Nixos)
 
-- Go ≥ 1.18  
+```bash
+nix run github:chetanjangir0/onepdfplease
+```
+
+---
+
+## Install on Nixos (If you use flakes)
+
+Add below to your flake.nix
+
+```nix
+{
+  inputs.onepdfplease.url = "github:<your-username>/onepdfplease";
+
+  outputs = { self, nixpkgs, onepdfplease, ... }:
+  {
+    nixosConfigurations.mySystem = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ({ pkgs, ... }: {
+          environment.systemPackages = [
+            onepdfplease.packages.${pkgs.system}.default
+          ];
+        })
+      ];
+    };
+  };
+}
+```
 
 ---
 
 ## Manual Installation (Linux)
+
+### Requirements for manual installation
+
+- Go ≥ 1.18
 
 ```bash
 git clone https://github.com/chetanjangir0/onepdfplease.git
