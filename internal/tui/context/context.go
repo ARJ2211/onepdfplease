@@ -17,5 +17,25 @@ type StatusType int
 const (
 	Error StatusType = iota
 	Success
+	Processing
 	None
 )
+
+func (m *ProgramContext) SetStatusProcessing() {
+	m.StatusType = Processing
+}
+
+func (m *ProgramContext) SetStatusError(msg string) {
+	m.Status = msg
+	m.StatusType = Error
+}
+
+func (m *ProgramContext) SetStatusSuccess(msg string) {
+	m.Status = msg
+	m.StatusType = Success
+}
+
+func (m *ProgramContext) ClearStatus() {
+	m.Status = ""
+	m.StatusType = None
+}

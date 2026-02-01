@@ -1,7 +1,5 @@
 package listfiles
 
-// TODO
-// fix "no items" style
 import (
 	"github.com/charmbracelet/bubbles/help"
 	"github.com/charmbracelet/bubbles/key"

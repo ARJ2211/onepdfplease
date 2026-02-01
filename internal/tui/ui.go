@@ -60,7 +60,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.onWindowSizeChanged(msg)
 	case tea.KeyMsg:
-		m.footer.ClearStatus()
+		m.ctx.ClearStatus()
 
 		switch keypress := msg.String(); keypress {
 		case "q", "ctrl+c":
@@ -81,9 +81,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	case messages.PDFOperationStatus:
 		if msg.Err != nil {
-			m.footer.ShowError(fmt.Sprintf("Failed: %v", msg.Err))
+			m.ctx.SetStatusError(fmt.Sprintf("Failed: %v", msg.Err))
 		} else {
-			m.footer.ShowSuccess(fmt.Sprintf("%s completed successfully", msg.TaskType))
+			m.ctx.SetStatusSuccess(fmt.Sprintf("%s completed successfully", msg.TaskType))
 		}
 	}
 

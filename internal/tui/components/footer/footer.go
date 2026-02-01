@@ -37,9 +37,12 @@ func (m Model) View() string {
 	case context.Success:
 		statusStyle = style.DefaultStyle.SuccessStyle
 		icon = "✓"
+	case context.Processing:
+		statusStyle = style.DefaultStyle.ErrorStyle
+		icon = "...processing"
 	default:
 		statusStyle = style.DefaultStyle.NeutralStyle
-		icon = "i"
+		icon = "Press ? for help"
 	}
 
 	footer := statusStyle.Render(fmt.Sprintf("%s %s", icon, m.ctx.Status))
@@ -50,19 +53,4 @@ func (m Model) View() string {
 		return lipgloss.JoinVertical(lipgloss.Top, footer, fullHelp)
 	}
 	return footer
-}
-
-func (m *Model) ShowError(msg string) {
-	m.ctx.Status = msg
-	m.ctx.StatusType = context.Error
-}
-
-func (m *Model) ShowSuccess(msg string) {
-	m.ctx.Status = msg
-	m.ctx.StatusType = context.Success
-}
-
-func (m *Model) ClearStatus() {
-	m.ctx.Status = ""
-	m.ctx.StatusType = context.None
 }
