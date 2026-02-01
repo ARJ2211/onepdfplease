@@ -21,7 +21,8 @@ const (
 	None
 )
 
-func (m *ProgramContext) SetStatusProcessing() {
+func (m *ProgramContext) SetStatusProcessing(msg string) {
+	m.Status = msg
 	m.StatusType = Processing
 }
 

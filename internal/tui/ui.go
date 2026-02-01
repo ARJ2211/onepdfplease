@@ -53,14 +53,16 @@ func InitialModel() model {
 }
 
 func (m model) Init() tea.Cmd {
-	return nil
+	return m.footer.Init() 
 }
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.onWindowSizeChanged(msg)
 	case tea.KeyMsg:
-		m.ctx.ClearStatus()
+		if m.ctx.StatusType != context.Processing {
+			m.ctx.ClearStatus()
+		}
 
 		switch keypress := msg.String(); keypress {
 		case "q", "ctrl+c":
@@ -87,7 +89,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
+	var cmds []tea.Cmd
 	var cmd tea.Cmd
+
+	m.footer, cmd = m.footer.Update(msg)
+	cmds = append(cmds, cmd)
+
 	switch m.ctx.CurrentPage {
 	case types.MenuPage:
 		m.menuModel, cmd = m.menuModel.Update(msg)
@@ -104,8 +111,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case types.ExtractImgsPage:
 		m.extractImgsModel, cmd = m.extractImgsModel.Update(msg)
 	}
+	cmds = append(cmds, cmd)
 
-	return m, cmd
+
+	return m, tea.Batch(cmds...)
 }
 
 func (m model) View() string {

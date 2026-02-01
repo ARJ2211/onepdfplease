@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/charmbracelet/bubbles/help"
+	"github.com/charmbracelet/bubbles/spinner"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/keys"
@@ -13,17 +15,34 @@ import (
 type Model struct {
 	help    help.Model
 	ctx     *context.ProgramContext
+	spinner spinner.Model
 	ShowAll bool
 }
 
 func NewModel(ctx *context.ProgramContext) Model {
 	help := help.New()
 	help.ShowAll = true
+
+	s := spinner.New()
+	s.Spinner = spinner.Dot
+	s.Style = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))
 	m := Model{
-		help: help,
-		ctx:  ctx,
+		help:    help,
+		ctx:     ctx,
+		spinner: s,
 	}
 	return m
+}
+
+func (m Model) Init() tea.Cmd {
+	return m.spinner.Tick
+}
+
+func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
+	var cmd tea.Cmd
+	m.spinner, cmd = m.spinner.Update(msg)
+
+	return m, cmd
 }
 
 func (m Model) View() string {
@@ -38,8 +57,8 @@ func (m Model) View() string {
 		statusStyle = style.DefaultStyle.SuccessStyle
 		icon = "✓"
 	case context.Processing:
-		statusStyle = style.DefaultStyle.ErrorStyle
-		icon = "...processing"
+		statusStyle = style.DefaultStyle.NeutralStyle
+		icon = m.spinner.View()
 	default:
 		statusStyle = style.DefaultStyle.NeutralStyle
 		icon = "Press ? for help"
