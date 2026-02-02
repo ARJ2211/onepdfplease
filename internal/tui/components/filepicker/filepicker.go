@@ -1,11 +1,6 @@
 package filepicker
 
 // TODO
-// add keymaps and show keymaps in help menu
-// space to toggle file selection and enter to end filepicker
-// add file deletions maybe give the user an undo button
-// add keys component from bubbles
-// add pagination in selected items too
 // don't use truncation in error view
 
 import (
@@ -34,7 +29,7 @@ func NewModel(ctx *context.ProgramContext) Model {
 
 	fp := filepicker.New()
 	fp.AllowedTypes = []string{".pdf"}
-	fp.CurrentDirectory, _ = os.UserHomeDir()
+	fp.CurrentDirectory, _ = os.Getwd()
 	fp.SetHeight(height)
 	fp.ShowPermissions = false
 	// fp.KeyMap.Select = key.NewBinding(
