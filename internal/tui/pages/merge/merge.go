@@ -1,8 +1,5 @@
 package merge
 
-// TODO:
-// change focus using tab
-// fix border changing after selected files become active
 import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"

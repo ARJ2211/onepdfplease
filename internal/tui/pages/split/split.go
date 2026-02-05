@@ -1,9 +1,5 @@
 package split
 
-// TODO:
-// add verification to ranges of pages
-// set option to extract all pages to yes by default
-
 import (
 	"strings"
 

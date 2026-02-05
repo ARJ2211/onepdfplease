@@ -1,9 +1,5 @@
 package utils
 
-// TODO:
-// show all errors when batch encrypt and decrypt using floating component
-// show err when saving a file that already exists
-
 import (
 	"fmt"
 	"os"
