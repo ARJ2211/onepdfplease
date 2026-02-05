@@ -1,25 +1,21 @@
 package filepicker
 
-// TODO
-// don't use truncation in error view
-
 import (
 	"errors"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
 	"github.com/charmbracelet/bubbles/filepicker"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 )
 
 type Model struct {
 	filepicker    filepicker.Model
 	SelectedFiles []string
-	err           error
 	ctx           *context.ProgramContext
 	height        int
 }
@@ -44,19 +40,11 @@ func NewModel(ctx *context.ProgramContext) Model {
 }
 
 func (m *Model) ClearSelected() {
-	m.SelectedFiles = nil 
+	m.SelectedFiles = nil
 }
 
 func (m Model) Init() tea.Cmd {
 	return m.filepicker.Init()
-}
-
-type clearErrorMsg struct{}
-
-func clearErrorAfter(t time.Duration) tea.Cmd {
-	return tea.Tick(t, func(_ time.Time) tea.Msg {
-		return clearErrorMsg{}
-	})
 }
 
 func (m *Model) SetAllowedTypes(types []string) {
@@ -69,8 +57,6 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 		switch msg.String() {
 		// case "ctrl+y":
 		}
-	case clearErrorMsg:
-		m.err = nil
 	}
 
 	var cmd tea.Cmd
@@ -82,12 +68,15 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	}
 
 	// Did the user select a disabled file?
-	// This is only necessary to display an error to the user.
-	if didSelect, path := m.filepicker.DidSelectDisabledFile(msg); didSelect {
-		// Let's clear the selectedFile and display an error.
-		m.err = errors.New(path + " is not valid.")
-		// m.selectedFile = ""
-		return m, tea.Batch(cmd, clearErrorAfter(2*time.Second))
+	if didSelect, _ := m.filepicker.DidSelectDisabledFile(msg); didSelect {
+		err := errors.New("File is not valid.")
+
+		return m, func() tea.Msg {
+			return messages.ShowError{
+				Err: err,
+			}
+		}
+
 	}
 
 	return m, cmd
@@ -109,9 +98,6 @@ func (m Model) browseView() string {
 	view.WriteString("Pick files:")
 	view.WriteString("\n\n" + m.filepicker.View() + "\n")
 
-	if m.err != nil {
-		view.WriteString(m.filepicker.Styles.DisabledFile.Render(m.err.Error()))
-	}
 	return view.String()
 }
 
