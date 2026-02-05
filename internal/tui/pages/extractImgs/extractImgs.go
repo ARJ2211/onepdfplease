@@ -1,11 +1,13 @@
 package extractimgs
 
 import (
+	"github.com/charmbracelet/bubbles/key"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/listfiles"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/components/userinputs"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/context"
+	"github.com/chetanjangir0/onepdfplease/internal/tui/keys"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/messages"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/style"
 	"github.com/chetanjangir0/onepdfplease/internal/tui/types"
@@ -70,15 +72,14 @@ func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		switch msg.String() {
-		// TODO: use keymaps
-		case "tab": // switch focus
+		switch {
+		case key.Matches(msg, keys.Keys.NxtTab):
 			m.focusIndex = (m.focusIndex + 1) % 2
 			return m, nil
-		case "shift+tab":
+		case key.Matches(msg, keys.Keys.PrevTab):
 			m.focusIndex = (m.focusIndex - 1 + 2) % 2
 			return m, nil
-		case "esc":
+		case key.Matches(msg, keys.Keys.Back):
 			return m, func() tea.Msg {
 				return messages.Navigate{Page: types.MenuPage}
 			}
