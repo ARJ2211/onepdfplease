@@ -14,29 +14,41 @@ import (
 )
 
 type Model struct {
-	filepicker    filepicker.Model
-	SelectedFiles []string
-	ctx           *context.ProgramContext
-	height        int
+	filepicker       filepicker.Model
+	SelectedFiles    []string
+	ctx              *context.ProgramContext
+	maxContentHeight int
+	contentHeight    int
 }
 
 func NewModel(ctx *context.ProgramContext) Model {
-	height := 20
+	const maxContentHeight = 20
 
 	fp := filepicker.New()
 	fp.AllowedTypes = []string{".pdf"}
 	fp.CurrentDirectory, _ = os.Getwd()
-	fp.SetHeight(height)
+	fp.SetHeight(maxContentHeight - 1)
+	fp.AutoHeight = false
 	fp.ShowPermissions = false
-	// fp.KeyMap.Select = key.NewBinding(
-	// 	key.WithKeys(" "),
-	// 	key.WithHelp("space", "select"),
-	// )
 	return Model{
-		filepicker: fp,
-		ctx:        ctx,
-		height:     height,
+		filepicker:       fp,
+		ctx:              ctx,
+		maxContentHeight: maxContentHeight,
+		contentHeight:    maxContentHeight,
 	}
+}
+
+func (m *Model) onWindowSizeChanged() {
+	// TODO: Remove hardcoded value
+	headerHeight := 3
+	borderHeight := 1
+	usedHeight := headerHeight + m.contentHeight + 2*borderHeight
+	if m.ctx.MainContentHeight < usedHeight {
+		m.contentHeight = m.ctx.MainContentHeight - headerHeight - 2*borderHeight
+	} else {
+		m.contentHeight = m.maxContentHeight
+	}
+	m.filepicker.SetHeight(m.contentHeight - 1)// -1 accounts for the extra 1 height upstreams sets
 }
 
 func (m *Model) ClearSelected() {
@@ -53,6 +65,8 @@ func (m *Model) SetAllowedTypes(types []string) {
 
 func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
+	case tea.WindowSizeMsg:
+		m.onWindowSizeChanged()
 	case tea.KeyMsg:
 		switch msg.String() {
 		// case "ctrl+y":
@@ -94,25 +108,21 @@ func (m Model) View() string {
 
 func (m Model) browseView() string {
 	var view strings.Builder
-	view.WriteString("\n  ")
-	view.WriteString("Pick files:")
-	view.WriteString("\n\n" + m.filepicker.View() + "\n")
+	view.WriteString("\n  Pick files:\n\n")
+	view.WriteString(m.filepicker.View())
 
 	return view.String()
 }
 
 func (m Model) selectedView() string {
 	var view strings.Builder
-	view.WriteString("\n  ")
-	view.WriteString("Selected files: \n")
-	view.WriteString("\n")
+	view.WriteString("\n  Selected files:\n\n")
 	for i, f := range m.SelectedFiles {
-		// only show the last m.height files when files are too many
-		if m.height <= len(m.SelectedFiles) && i < len(m.SelectedFiles)-m.height {
+		// only show the last m.contentHeight files when files are too many
+		if m.contentHeight-1 <= len(m.SelectedFiles) && i < len(m.SelectedFiles)-(m.contentHeight - 1){
 			continue
 		}
 		view.WriteString(m.filepicker.Styles.Selected.PaddingLeft(2).Render(filepath.Base(f)) + "\n")
 	}
-	view.WriteString("\n")
 	return view.String()
 }
