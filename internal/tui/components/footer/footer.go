@@ -71,5 +71,5 @@ func (m Model) View() string {
 		fullHelp := m.help.View(keyMap)
 		footer = lipgloss.JoinVertical(lipgloss.Left, footer, fullHelp)
 	}
-	return lipgloss.NewStyle().MarginLeft(2).Render(footer)
+	return lipgloss.NewStyle().MarginLeft(1).Render(footer)
 }
