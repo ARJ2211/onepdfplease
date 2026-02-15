@@ -35,7 +35,7 @@ func Merge(inFiles []string, outFile string, ctx *context.ProgramContext) tea.Cm
 				Err:      fmt.Errorf("At least 2 files required for merge"),
 			}
 		}
-		outFile = addExtension(outFile, ".pdf")
+		outFile = updateFileExtension(outFile, ".pdf")
 		err := api.MergeCreateFile(inFiles, getNextAvailablePath(outFile), false, nil)
 		if err != nil {
 			return messages.PDFOperationStatus{
@@ -285,7 +285,7 @@ func Img2Pdf(inFiles []string, outFile string, mergeIntoOne bool, ctx *context.P
 			}
 		}
 
-		outFile = addExtension(outFile, ".pdf")
+		outFile = updateFileExtension(outFile, ".pdf")
 		if mergeIntoOne {
 			err := api.ImportImagesFile(inFiles, getNextAvailablePath(outFile), nil, nil)
 			if err != nil {
@@ -380,7 +380,7 @@ func getNextAvailablePath(basePath string) string {
 	}
 }
 
-func addExtension(path, newExt string) string {
+func updateFileExtension(path, newExt string) string {
 	ext := filepath.Ext(path)
 	switch ext {
 	case newExt:
