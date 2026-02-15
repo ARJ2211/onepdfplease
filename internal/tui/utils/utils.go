@@ -50,7 +50,14 @@ func Merge(inFiles []string, outFile string, ctx *context.ProgramContext) tea.Cm
 	}
 }
 
-func Encrypt(inFiles []string, password, outFilePath, outFilePrefix string, inPlace bool, ctx *context.ProgramContext) tea.Cmd {
+func Encrypt(
+	inFiles []string,
+	password,
+	outFilePath,
+	outFilePrefix string,
+	inPlace bool,
+	ctx *context.ProgramContext,
+) tea.Cmd {
 	return func() tea.Msg {
 		ctx.SetStatusProcessing("encrypting files...")
 		taskType := "Encryption"
@@ -115,7 +122,14 @@ func Encrypt(inFiles []string, password, outFilePath, outFilePrefix string, inPl
 
 }
 
-func Decrypt(inFiles []string, password, outFilePath, outFilePrefix string, inPlace bool, ctx *context.ProgramContext) tea.Cmd {
+func Decrypt(
+	inFiles []string,
+	password,
+	outFilePath,
+	outFilePrefix string,
+	inPlace bool,
+	ctx *context.ProgramContext,
+) tea.Cmd {
 	return func() tea.Msg {
 		ctx.SetStatusProcessing("decrypting files...")
 		taskType := "Decryption"
